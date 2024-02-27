@@ -65,7 +65,31 @@ var order = 5
 var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
 
 // Select the d_0_ndvi band and rename it
-var smoothed = smoothed.select(['d_0_NDVI'], ['smoothed_NDVI'])
+var d_0_bands = ['d_0_B2',
+                  'd_0_B3', 
+                  'd_0_B4', 
+                  'd_0_B5',
+                  'd_0_B6',
+                  'd_0_B7',
+                  'd_0_B8',
+                  'd_0_B8A',
+                  'd_0_B11',
+                  'd_0_B12', 
+                  'd_0_NDVI'];
+                  
+var smoothed_bands = ['smoothed_B2',
+                  'smoothed_B3', 
+                  'smoothed_B4', 
+                  'smoothed_B5',
+                  'smoothed_B6',
+                  'smoothed_B7',
+                  'smoothed_B8',
+                  'smoothed_B8A',
+                  'smoothed_B11',
+                  'smoothed_B12', 
+                  'smoothed_NDVI'];
+
+var smoothed = smoothed.select(d_0_bands, ['smoothed_NDVI'])
 //##############################################################
 // Step-6: Visualize the results
 //##############################################################
