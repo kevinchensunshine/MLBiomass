@@ -1,9 +1,9 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754633838]);
+var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754633838]),
+    s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
-var bands = ['NIRVP_0000', 'NIRVP_0300', 'NIRVP_0600', 'NIRVP_0900', 'NIRVP_1200', 'NIRVP_1500', 'NIRVP_1800', 'NIRVP_2100'];
-var s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
@@ -46,7 +46,7 @@ function addNDVI(image) {
 }
 
 var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30)).map(maskS2clouds).map(addNDVI)
-var filtered_s2images = filtered_one.select('NDVI');
+var filtered_s2images = filtered_one.select(bands);
 
 //##############################################################
 // Step-2: Apply an SGFilter
