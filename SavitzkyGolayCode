@@ -12,7 +12,7 @@ var point = data;
 var geometry = data;
 var bufferDistance = 5000; // Buffer in meters, adjust as needed
 var clippingRegion = geometry.buffer(bufferDistance);
-var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12'];
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 // Function to clip the image to the defined geometry
 function clipToRegion(image) {
   return image.clip(clippingRegion);
@@ -46,7 +46,7 @@ function addNDVI(image) {
   return image.addBands(ndvi);
 }
 
-var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30)).map(maskS2clouds).map(addNDVI).select(bands)
+var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30)).map(maskS2clouds).map(addNDVI)
 var filtered_s2images = filtered_one.select('NDVI');
 
 //##############################################################
@@ -101,7 +101,7 @@ function reduceImage2(image) {
   var timeStart = image.get('system:time_start');
 
   // Return a feature with mean NDVI and time_start property
-  return ee.Feature(null, {'smoothed_NDVI': meanNdvi, 'system:time_start': timeStart});
+  return ee.Feature(null, {'smoothed_NDVI': meanNdvi, 'system:time_start': timeStart}).setGeometry(data);
 }
 
 var reducedNdviCol = filtered_s2images.map(reduceImage1).map(function(feature) {
@@ -115,12 +115,12 @@ var reducedSmoothed = smoothed.map(reduceImage2).map(function(feature) {
 
 // Export the original NDVI data
 Export.table.toAsset({
-  collection: reducedNdviCol.select(['meanNDVI', 'date']),
+  collection: reducedNdviCol,
   description: 'Original_NDVI_season'
 });
 
 // Export the smoothed NDVI data
 Export.table.toAsset({
-  collection: reducedSmoothed.select(['smoothed_NDVI', 'date']),
+  collection: reducedSmoothed,
   description: 'Smoothed_NDVI_season'
 });
