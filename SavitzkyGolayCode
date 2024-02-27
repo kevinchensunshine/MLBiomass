@@ -7,10 +7,10 @@ var data =
       }
     ] */
     ee.Geometry.Polygon(
-        [[[9.660550267033834, 56.46023770332376],
-          [9.660550267033834, 56.3820045058908],
-          [9.814358860783834, 56.3820045058908],
-          [9.814358860783834, 56.46023770332376]]], null, false),
+        [[[9.715481907658834, 56.43860675399872],
+          [9.715481907658834, 56.424559019474295],
+          [9.747067601018209, 56.424559019474295],
+          [9.747067601018209, 56.43860675399872]]], null, false),
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
@@ -81,6 +81,7 @@ var smoothed = smoothed.select(['d_0_NDVI'], ['smoothed_NDVI'])
 //##############################################################
 // Step-6: Visualize the results
 //##############################################################
+
 function formatDate(feature) {
   return ee.Date(feature.get('system:time_start')).format('YYYY-MM-dd');
 }
@@ -124,19 +125,13 @@ var reducedSmoothed = smoothed.map(reduceImage2).map(function(feature) {
 })
 
 // Export the original NDVI data
-Export.table.toDrive({
-  collection: reducedNdviCol,
-  description: 'Original_NDVI_season',
-  fileFormat: 'CSV',
-  folder: 'earthengine',
-  selectors: ['meanNDVI', 'date'] // Specify the properties to export
+Export.table.toAsset({
+  collection: reducedNdviCol.select(['meanNDVI', 'date']),
+  description: 'Original_NDVI_season'
 });
 
 // Export the smoothed NDVI data
-Export.table.toDrive({
-  collection: reducedSmoothed,
-  description: 'Smoothed_NDVI_season',
-  fileFormat: 'CSV',
-  folder: 'earthengine',
-  selectors: ['smoothed_NDVI', 'date'] // Specify the properties to export
+Export.table.toAsset({
+  collection: reducedSmoothed.select(['smoothed_NDVI', 'date']),
+  description: 'Smoothed_NDVI_season'
 });
