@@ -1,7 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var data = /* color: #d63000 */ee.Geometry.MultiPoint(
-        [[9.654077535308149, 56.47565754633838],
-         [9.540094381011274, 56.5805585028823]]);
+var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754633838]);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 var bands = ['NIRVP_0000', 'NIRVP_0300', 'NIRVP_0600', 'NIRVP_0900', 'NIRVP_1200', 'NIRVP_1500', 'NIRVP_1800', 'NIRVP_2100'];
