@@ -30,7 +30,7 @@ function clipToRegion(image) {
 }
 
 var styling = {color:'red',fillColor:'00000000'}
-Map.addLayer(geometry, {color: 'red'}, 'ROI');
+Map.addLayer(clippingRegion, {color: 'red'}, 'ROI');
 Map.centerObject(geometry, 15)
 // var geometry = geometry.geometry()
 var startDate_one = ee.Date('2018-09-01')
