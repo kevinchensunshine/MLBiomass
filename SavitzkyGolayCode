@@ -54,7 +54,7 @@ var filtered_s2images = filtered_one.select('NDVI');
 //##############################################################
 
 // Select the interval. We will have 1 image every n days
-var n = 3
+var n = 1
 
 var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, clippingRegion).select(['NDVI'])
 
