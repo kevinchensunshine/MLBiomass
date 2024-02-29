@@ -12,19 +12,16 @@ var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
 var wheatfields_shapes = wheatfields.reduceToVectors({
   geometry: denmark_bound,
   scale: 10, // Adjust the scale based on your data's resolution
-  maxPixels: 1e9
+  maxPixels: 1e9,
+  bestEffort: true,
+  tileScale: 4
 });
 
-var strawberryGeometry = vectorStrawberryFields.geometry();
-
-Map.addLayer(strawberryGeometry, {color: 'red'}, 'Strawberry Geometry');
 
 var assetId = 'users/kevinlc3/strawberry_california_landcover';
 
-print(vectorStrawberryFields.size())
-
 Export.table.toAsset({
-  collection: vectorStrawberryFields,
+  collection: wheatfields_shapes,
   description: 'strawberry_fields_geometry',
   assetId: 'users/kevinlc3/strawberry_fields_geometry'
 });
