@@ -1,7 +1,21 @@
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
+
+// Specify grid size in projection, x and y units (based on projection).
+var projection='EPSG:4326'; // WGS84 lat lon
+var dx=0.5;
+var dy=0.25;
+
+// Make grid and visualize.
+var proj=ee.Projection(projection).scale(dx, dy);
+var grid=denmark_bound.coveringGrid(proj);
+
+Map.addLayer(denmark_bound,{}, 'roi');
+Map.addLayer(grid,{}, 'grid');
+            /*
             
+
 var denmark_euromap = euromap_2018.clip(denmark_bound)
 
 var wheatlandcovermask = denmark_euromap.select('classification').eq(211)
@@ -26,3 +40,4 @@ Export.table.toAsset({
   description: 'strawberry_fields_geometry',
   assetId: 'users/kevinlc3/strawberry_fields_geometry'
 });
+*/
