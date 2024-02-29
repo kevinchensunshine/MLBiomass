@@ -1,3 +1,6 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var denmark_grid = ee.ImageCollection("users/kevinlc3/denmark_grid_composite");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
@@ -13,6 +16,35 @@ var grid=denmark_bound.coveringGrid(proj);
 
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
+
+var assetCollection='users/kevinlc3/denmark_grid_composite';
+var imageBaseName='crop_shapes';
+
+var gridSize=grid.size().getInfo();
+var gridList=grid.toList(gridSize);
+
+Export.table.toAsset({
+  collection: grid,
+  description: 'denmark_grids',
+  assetId: 'users/kevinlc3/denmark_grids'
+});
+
+/*
+var denmark_euromap = euromap_2018.clip(denmark_bound)
+
+var wheatlandcovermask = denmark_euromap.select('classification').eq(211)
+
+var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
+
+var assetId = 'users/kevinlc3/strawberry_california_landcover';
+
+Export.table.toAsset({
+  collection: wheatfields_shapes,
+  description: 'strawberry_fields_geometry',
+  assetId: 'users/kevinlc3/strawberry_fields_geometry'
+});
+*/
+
             /*
             
 
