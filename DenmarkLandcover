@@ -11,9 +11,10 @@ var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
 
 var wheatfields_shapes = wheatfields.reduceToVectors({
   geometry: denmark_bound,
-  scale: 10, // Adjust the scale based on your data's resolution
+  scale: 30, // Adjust the scale based on your data's resolution
   maxPixels: 1e9,
   bestEffort: true,
+  eightConnected: true,
   tileScale: 4
 });
 
