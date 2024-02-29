@@ -8,32 +8,21 @@ var wheatlandcovermask = denmark_euromap.select('classification').eq(211)
 
 // Apply the mask to the dataset
 var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
-Map.centerObject(wheatfields)
-Map.addLayer(wheatfields)
-/*
-var confidenceThreshold = 60;
-var highConfidenceMask = dataset.select('confidence').gt(confidenceThreshold);
-var strawberries = strawberries.updateMask(highConfidenceMask);
 
-// Add the layer to the map
-
-var vectorStrawberryFields = strawberries.reduceToVectors({
-  geometry: california_bound.geometry(),
-  scale: 30, // Adjust the scale based on your data's resolution
+var wheatfields_shapes = wheatfields.reduceToVectors({
+  geometry: denmark_bound,
+  scale: 10,
   maxPixels: 1e9
 });
 
-var strawberryGeometry = vectorStrawberryFields.geometry();
+var wheatgeom = wheatfields_shapes.geometry();
 
-Map.addLayer(strawberryGeometry, {color: 'red'}, 'Strawberry Geometry');
+Map.addLayer(wheatgeom, {color: 'red'}, 'Wheatfield Geometry');
 
-var assetId = 'users/kevinlc3/strawberry_california_landcover';
-
-print(vectorStrawberryFields.size())
+var assetId = 'users/kevinlc3/wheat_denmark_landcover';
 
 Export.table.toAsset({
-  collection: vectorStrawberryFields,
-  description: 'strawberry_fields_geometry',
-  assetId: 'users/kevinlc3/strawberry_fields_geometry'
+  collection: wheatfields_shapes,
+  description: 'wheat_fields_geometry',
+  assetId: assetId
 });
-*/
