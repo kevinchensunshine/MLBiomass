@@ -6,6 +6,7 @@ var visualization = {
   max: 0.3,
   bands: ['smoothed_B4', 'smoothed_B3', 'smoothed_B2'],
 };
-
-Map.addLayer(sv_gol.first(), visualization)
+var sz = sv_gol.size().getInfo()
+var ls = sv_gol.toList(sz)
+Map.addLayer(ee.Image(ls.get(33)), visualization)
 Map.centerObject(sv_gol)
