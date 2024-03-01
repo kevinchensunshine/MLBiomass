@@ -39,20 +39,5 @@ for (var i=0; i < gridSize; i++){
     assetId: folderpath + 'wheatfields_tile' + i
   });
 }
-/*
-var denmark_euromap = euromap_2018.clip(denmark_bound)
-
-var wheatlandcovermask = denmark_euromap.select('classification').eq(211)
-
-var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
-
-var assetId = 'users/kevinlc3/strawberry_california_landcover';
-
-Export.table.toAsset({
-  collection: wheatfields_shapes,
-  description: 'strawberry_fields_geometry',
-  assetId: 'users/kevinlc3/strawberry_fields_geometry'
-});
-*/
 
             
