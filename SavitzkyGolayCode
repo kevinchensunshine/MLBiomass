@@ -104,14 +104,15 @@ for (var i = 0; i < n; i++) {
                     'smoothed_B12', 
                     'smoothed_NDVI'];
   
-  var smoothed = smoothed.select(d_0_bands, ['smoothed_NDVI'])
+  var smoothed = smoothed.select(d_0_bands, smoothed_bands)
   //##############################################################
   // Step-6: Visualize the results
   //##############################################################
 
   // Export the original NDVI data
   Export.image.toAsset({
-    collection: imagecollection_dest_path,
-    description: 'Image for tile ' + i
+    image: smoothed,
+    description: 'Image for tile ' + i,
+    assetId: imagecollection_dest_path + '/tile_' + i
   });
 }
