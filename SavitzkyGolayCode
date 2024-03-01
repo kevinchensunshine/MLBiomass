@@ -10,7 +10,7 @@ var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
             
 for (var i = 0; i < 98; i++) {
-  batch_list.push(folder_path + filename_base + i);
+  if (i != 13) {  batch_list.push(folder_path + filename_base + i); }
 }
 
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
@@ -39,11 +39,11 @@ function formatDate(feature) {
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
-var n = batch_list.length;
-for (var i = 0; i < n; i++) {
+var len = batch_list.length;
+for (var i = 0; i < len; i++) {
   
   var geometry = ee.FeatureCollection(batch_list[i]).geometry().dissolve()
-  
+  print(geometry)
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
   var startDate_one = ee.Date('2018-09-01')
