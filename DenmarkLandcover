@@ -1,6 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var grid = ee.ImageCollection("users/kevinlc3/denmark_grid_composite"),
-    table = ee.FeatureCollection("users/kevinlc3/denmark_grids");
+var grid = ee.FeatureCollection("users/kevinlc3/denmark_grids");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
@@ -9,7 +8,7 @@ var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
 
-var folderpath='users/kevinlc3/wheatfields_grid_geometries/';
+var folderpath='users/kevinlc3/DenmarkStudy/';
 var imageBaseName='crop_shapes';
 
 var gridSize=grid.size().getInfo();
@@ -21,7 +20,8 @@ for (var i=0; i < gridSize; i++){
 
   var euromap_cell = euromap_2018.clip(gridCell)
 
-   // Apply the mask to the dataset
+  var croplandcover = euromap_cell.select('classification')
+  var wheatlandcovermask = croplandcover.eq(211)
   var wheatfields = euromap_cell.updateMask(wheatlandcovermask);
   
   var wheatfields_shapes = wheatfields.reduceToVectors({
