@@ -1,7 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754633838]),
-    s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
-    euromap = ee.ImageCollection("JRC/D5/EUCROPMAP/V1");
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
@@ -46,11 +44,8 @@ function formatDate(feature) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var n = batch_list.length;
-print(n)
 for (var i = 0; i < n; i++) {
-  var geometry = ee.FeatureCollection(batch_list[i])
-                  .filterBounds(denmark_bound)
-                  .geometry()
+  var geometry = ee.FeatureCollection(batch_list[i]).geometry()
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
@@ -110,10 +105,9 @@ for (var i = 0; i < n; i++) {
   // Step-6: Visualize the results
   //##############################################################
 
-  // Export the original NDVI data
   Export.image.toAsset({
     image: smoothed,
-    description: 'Image_for_tile ' + i,
+    description: 'Image_for_tile_' + i,
     assetId: imagecollection_dest_path + '/tile_' + i
   });
 }
