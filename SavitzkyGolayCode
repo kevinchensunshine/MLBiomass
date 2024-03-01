@@ -49,12 +49,13 @@ for (var i = 0; i < len; i++) {
   var endDate_one = ee.Date('2018-12-31')
   
   var filtered_one = s2
-    .filter(ee.Filter.date(startDate_one, endDate_one))
+    .filterDate(startDate_one, endDate_one)
     .filterBounds(geometry)
   
-  var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+  filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                     .map(maskS2clouds)
                     .map(addNDVI)
+                    
   var filtered_s2images = filtered_one.select(bands);
   
   //##############################################################
@@ -71,7 +72,7 @@ for (var i = 0; i < len; i++) {
   //##############################################################
   
   var order = 5
-  var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
+  var interpolatedCol = gpp_utils.applySGFilter(interpolatedCol, order)
   
   // Select the d_0_ndvi band and rename it
   var d_0_bands = ['d_0_B2',
@@ -98,14 +99,19 @@ for (var i = 0; i < len; i++) {
                     'smoothed_B12', 
                     'smoothed_NDVI'];
   
-  var smoothed = smoothed.select(d_0_bands, smoothed_bands)
+  var smoothed = interpolatedCol.select(d_0_bands, smoothed_bands)
   //##############################################################
   // Step-6: Visualize the results
   //##############################################################
-
-  Export.image.toAsset({
-    image: smoothed,
-    description: 'Image_for_tile_' + i,
-    assetId: imagecollection_dest_path + '/tile_' + i
-  });
+  var size = smoothed.size().getInfo()
+  var imglist = smoothed.toList(size);
+  
+  for (var j = 0; j < size; j++) {
+    var img = ee.Image(imglist.get(j));
+    Export.image.toAsset({
+      image: smoothed,
+      description: 'Image_for_tile_' + i + '_image_' + j,
+      assetId: imagecollection_dest_path + '/tile_' + i + '_image_' + j
+    });
+  }
 }
