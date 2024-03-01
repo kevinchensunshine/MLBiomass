@@ -50,7 +50,7 @@ for (var i = 0; i < len; i++) {
   
   var filtered_one = s2
     .filter(ee.Filter.date(startDate_one, endDate_one))
-    .filter(ee.Filter.bounds(geometry))
+    .filterBounds(geometry)
   
   var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                     .map(maskS2clouds)
