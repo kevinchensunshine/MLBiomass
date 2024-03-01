@@ -52,11 +52,7 @@ for (var i = 0; i < n; i++) {
                   .geometry()
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
-  // Function to clip the image to the defined geometry
-  var styling = {color:'red',fillColor:'00000000'}
-  Map.addLayer(clippingRegion, {color: 'red'}, 'ROI');
-  Map.centerObject(geometry, 15)
-  // var geometry = geometry.geometry()
+
   var startDate_one = ee.Date('2018-09-01')
   var endDate_one = ee.Date('2018-12-31')
   
@@ -72,7 +68,7 @@ for (var i = 0; i < n; i++) {
   //##############################################################
   
   // Select the interval. We will have 1 image every n days
-  var n = 1
+  var n = 3
   
   var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, clippingRegion).select(['NDVI'])
   
