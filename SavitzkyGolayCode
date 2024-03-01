@@ -4,40 +4,23 @@ var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754
     euromap = ee.ImageCollection("JRC/D5/EUCROPMAP/V1");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
-var afolder_path = "users/kevinlc3/csbca_strawberries_field_level_2017/";
-var filename = "strawberry_fields_cdl_csba_intersect_2017";
+var folder_path = "users/kevinlc3/DenmarkStudy/";
+var filename_base = "wheatfields_tile";
 var batch_list = []
-
+var imagecollection_dest_path = 'users/kevinlc3/denmark_wheat_smoothed'
+var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
+            .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
+            
 for (var i = 0; i < 1600; i += 41) {
-  batch_list.push("batch_" + i);
+  batch_list.push(folder_path + filename_base + i);
 }
 
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
-//##############################################################
-// Step-1: Prepare a NDVI time-series
-//##############################################################
-var point = data;
-var geometry = data;
-var bufferDistance = 5000; // Buffer in meters, adjust as needed
-var clippingRegion = geometry.buffer(bufferDistance);
-var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
-// Function to clip the image to the defined geometry
 function clipToRegion(image) {
-  return image.clip(clippingRegion);
-}
-
-var styling = {color:'red',fillColor:'00000000'}
-Map.addLayer(clippingRegion, {color: 'red'}, 'ROI');
-Map.centerObject(geometry, 15)
-// var geometry = geometry.geometry()
-var startDate_one = ee.Date('2018-09-01')
-var endDate_one = ee.Date('2018-12-31')
-
-var filtered_one = s2
-  .filter(ee.Filter.date(startDate_one, endDate_one))
-  .filter(ee.Filter.bounds(geometry))
-
+    return image.clip(clippingRegion);
+  }
+  
 function maskS2clouds(image) {
   var qa = image.select('QA60');
   var cloudBitMask = 1 << 10;
@@ -55,105 +38,84 @@ function addNDVI(image) {
   return image.addBands(ndvi);
 }
 
-var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30)).map(maskS2clouds).map(addNDVI)
-var filtered_s2images = filtered_one.select(bands);
-
-//##############################################################
-// Step-2: Apply an SGFilter
-//##############################################################
-
-// Select the interval. We will have 1 image every n days
-var n = 1
-
-var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, clippingRegion).select(['NDVI'])
-
-//##############################################################
-// Step-5: Apply Savitzky-Golay filter
-//##############################################################
-
-var order = 5
-var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
-
-// Select the d_0_ndvi band and rename it
-var d_0_bands = ['d_0_B2',
-                  'd_0_B3', 
-                  'd_0_B4', 
-                  'd_0_B5',
-                  'd_0_B6',
-                  'd_0_B7',
-                  'd_0_B8',
-                  'd_0_B8A',
-                  'd_0_B11',
-                  'd_0_B12', 
-                  'd_0_NDVI'];
-                  
-var smoothed_bands = ['smoothed_B2',
-                  'smoothed_B3', 
-                  'smoothed_B4', 
-                  'smoothed_B5',
-                  'smoothed_B6',
-                  'smoothed_B7',
-                  'smoothed_B8',
-                  'smoothed_B8A',
-                  'smoothed_B11',
-                  'smoothed_B12', 
-                  'smoothed_NDVI'];
-
-var smoothed = smoothed.select(d_0_bands, ['smoothed_NDVI'])
-//##############################################################
-// Step-6: Visualize the results
-//##############################################################
-
 function formatDate(feature) {
   return ee.Date(feature.get('system:time_start')).format('YYYY-MM-dd');
 }
 
-function reduceImage1(image) {
-  var meanNdvi = image.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: geometry,
-    scale: 10,
-    maxPixels: 1e9
-  }).get('NDVI');
+//##############################################################
+// Step-1: Prepare a NDVI time-series
+//##############################################################
+var n = batch_list.length();
+for (var i = 0; i < n; i++) {
+  var geometry = ee.FeatureCollection(batch_list[i])
+                  .filterBounds(denmark_bound)
+                  .geometry()
+  
+  var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
+  // Function to clip the image to the defined geometry
+  var styling = {color:'red',fillColor:'00000000'}
+  Map.addLayer(clippingRegion, {color: 'red'}, 'ROI');
+  Map.centerObject(geometry, 15)
+  // var geometry = geometry.geometry()
+  var startDate_one = ee.Date('2018-09-01')
+  var endDate_one = ee.Date('2018-12-31')
+  
+  var filtered_one = s2
+    .filter(ee.Filter.date(startDate_one, endDate_one))
+    .filter(ee.Filter.bounds(geometry))
+  
+  var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30)).map(maskS2clouds).map(addNDVI)
+  var filtered_s2images = filtered_one.select(bands);
+  
+  //##############################################################
+  // Step-2: Apply an SGFilter
+  //##############################################################
+  
+  // Select the interval. We will have 1 image every n days
+  var n = 1
+  
+  var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, clippingRegion).select(['NDVI'])
+  
+  //##############################################################
+  // Step-5: Apply Savitzky-Golay filter
+  //##############################################################
+  
+  var order = 5
+  var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
+  
+  // Select the d_0_ndvi band and rename it
+  var d_0_bands = ['d_0_B2',
+                    'd_0_B3', 
+                    'd_0_B4', 
+                    'd_0_B5',
+                    'd_0_B6',
+                    'd_0_B7',
+                    'd_0_B8',
+                    'd_0_B8A',
+                    'd_0_B11',
+                    'd_0_B12', 
+                    'd_0_NDVI'];
+                    
+  var smoothed_bands = ['smoothed_B2',
+                    'smoothed_B3', 
+                    'smoothed_B4', 
+                    'smoothed_B5',
+                    'smoothed_B6',
+                    'smoothed_B7',
+                    'smoothed_B8',
+                    'smoothed_B8A',
+                    'smoothed_B11',
+                    'smoothed_B12', 
+                    'smoothed_NDVI'];
+  
+  var smoothed = smoothed.select(d_0_bands, ['smoothed_NDVI'])
+  //##############################################################
+  // Step-6: Visualize the results
+  //##############################################################
 
-  // Get the time_start from the image metadata
-  var timeStart = image.get('system:time_start');
-
-  return ee.Feature(null, {'meanNDVI': meanNdvi, 'system:time_start': timeStart});
+  // Export the original NDVI data
+  Export.image.toAsset({
+    collection: imagecollection_dest_path,
+    description: 'Image for tile ' + i
+  });
 }
-
-function reduceImage2(image) {
-  var meanNdvi = image.reduceRegion({
-    reducer: ee.Reducer.mean(),
-    geometry: geometry,
-    scale: 10,
-    maxPixels: 1e9
-  }).get('smoothed_NDVI');
-
-  // Get the time_start from the image metadata
-  var timeStart = image.get('system:time_start');
-
-  // Return a feature with mean NDVI and time_start property
-  return ee.Feature(null, {'smoothed_NDVI': meanNdvi, 'system:time_start': timeStart}).setGeometry(data);
-}
-
-var reducedNdviCol = filtered_s2images.map(reduceImage1).map(function(feature) {
-  return feature.set('date', formatDate(feature));
-})
-
-// Apply the function to each image in the smoothed collection
-var reducedSmoothed = smoothed.map(reduceImage2).map(function(feature) {
-  return feature.set('date', formatDate(feature));
-})
-
-// Export the original NDVI data
-Export.table.toAsset({
-  collection: reducedNdviCol,
-  description: 'Original_NDVI_season'
-});
-
-// Export the smoothed NDVI data
-Export.table.toAsset({
-  collection: reducedSmoothed,
-  description: 'Smoothed_NDVI_season'
-});
