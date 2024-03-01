@@ -3,6 +3,9 @@ var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
     euromap = ee.ImageCollection("JRC/D5/EUCROPMAP/V1");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+
+
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
 //##############################################################
