@@ -11,7 +11,7 @@ var imagecollection_dest_path = 'users/kevinlc3/denmark_wheat_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
             
-for (var i = 0; i < 98; i += 1) {
+for (var i = 0; i < 98; i++) {
   batch_list.push(folder_path + filename_base + i);
 }
 
