@@ -41,7 +41,8 @@ function formatDate(feature) {
 //##############################################################
 var n = batch_list.length;
 for (var i = 0; i < n; i++) {
-  var geometry = ee.FeatureCollection(batch_list[i]).geometry()
+  
+  var geometry = ee.FeatureCollection(batch_list[i]).geometry().dissolve()
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
