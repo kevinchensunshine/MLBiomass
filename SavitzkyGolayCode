@@ -4,7 +4,13 @@ var data = /* color: #d63000 */ee.Geometry.Point([9.654077535308149, 56.47565754
     euromap = ee.ImageCollection("JRC/D5/EUCROPMAP/V1");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
+var afolder_path = "users/kevinlc3/csbca_strawberries_field_level_2017/";
+var filename = "strawberry_fields_cdl_csba_intersect_2017";
+var batch_list = []
 
+for (var i = 0; i < 1600; i += 41) {
+  batch_list.push("batch_" + i);
+}
 
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
