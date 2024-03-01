@@ -1,5 +1,11 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var sv_gol = ee.ImageCollection("users/kevinlc3/denmark_wheat_smoothed");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-Map.addLater(sv_gol)
+var visualization = {
+  min: 0.0,
+  max: 0.3,
+  bands: ['smoothed_B4', 'smoothed_B3', 'smoothed_B2'],
+};
+
+Map.addLayer(sv_gol.first(), visualization)
 Map.centerObject(sv_gol)
