@@ -46,6 +46,7 @@ function formatDate(feature) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var n = batch_list.length;
+print(n)
 for (var i = 0; i < n; i++) {
   var geometry = ee.FeatureCollection(batch_list[i])
                   .filterBounds(denmark_bound)
