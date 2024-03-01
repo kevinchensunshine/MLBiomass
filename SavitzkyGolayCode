@@ -45,7 +45,7 @@ function formatDate(feature) {
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
-var n = batch_list.length();
+var n = batch_list.length;
 for (var i = 0; i < n; i++) {
   var geometry = ee.FeatureCollection(batch_list[i])
                   .filterBounds(denmark_bound)
@@ -70,7 +70,7 @@ for (var i = 0; i < n; i++) {
   // Select the interval. We will have 1 image every n days
   var n = 3
   
-  var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, clippingRegion).select(['NDVI'])
+  var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
   
   //##############################################################
   // Step-5: Apply Savitzky-Golay filter
