@@ -1,34 +1,44 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var denmark_grid = ee.ImageCollection("users/kevinlc3/denmark_grid_composite");
+var grid = ee.ImageCollection("users/kevinlc3/denmark_grid_composite"),
+    table = ee.FeatureCollection("users/kevinlc3/denmark_grids");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
 
-// Specify grid size in projection, x and y units (based on projection).
-var projection='EPSG:4326'; // WGS84 lat lon
-var dx=0.5;
-var dy=0.25;
-
-// Make grid and visualize.
-var proj=ee.Projection(projection).scale(dx, dy);
-var grid=denmark_bound.coveringGrid(proj);
-
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
 
-var assetCollection='users/kevinlc3/denmark_grid_composite';
+var folderpath='users/kevinlc3/wheatfields_grid_geometries';
 var imageBaseName='crop_shapes';
 
 var gridSize=grid.size().getInfo();
 var gridList=grid.toList(gridSize);
 
-Export.table.toAsset({
-  collection: grid,
-  description: 'denmark_grids',
-  assetId: 'users/kevinlc3/denmark_grids'
-});
+for (var i=0; i < gridSize; i++){
 
+  var gridCell=ee.Feature(gridList.get(i)).geometry();
+
+  var euromap_cell = euromap_2018.clip(gridCell)
+
+   // Apply the mask to the dataset
+  var wheatfields = euromap_cell.updateMask(wheatlandcovermask);
+  
+  var wheatfields_shapes = wheatfields.reduceToVectors({
+    geometry: denmark_bound,
+    scale: 30, // Adjust the scale based on your data's resolution
+    maxPixels: 1e9,
+    bestEffort: true,
+    eightConnected: true,
+    tileScale: 4
+  });
+  
+  Export.table.toAsset({
+    collection: wheatfields_shapes,
+    description: 'wheatfields',
+    assetId: folderpath + 'wheatfields_tile' + i
+  });
+}
 /*
 var denmark_euromap = euromap_2018.clip(denmark_bound)
 
@@ -45,31 +55,4 @@ Export.table.toAsset({
 });
 */
 
-            /*
             
-
-var denmark_euromap = euromap_2018.clip(denmark_bound)
-
-var wheatlandcovermask = denmark_euromap.select('classification').eq(211)
-
-// Apply the mask to the dataset
-var wheatfields = denmark_euromap.updateMask(wheatlandcovermask);
-
-var wheatfields_shapes = wheatfields.reduceToVectors({
-  geometry: denmark_bound,
-  scale: 30, // Adjust the scale based on your data's resolution
-  maxPixels: 1e9,
-  bestEffort: true,
-  eightConnected: true,
-  tileScale: 4
-});
-
-
-var assetId = 'users/kevinlc3/strawberry_california_landcover';
-
-Export.table.toAsset({
-  collection: wheatfields_shapes,
-  description: 'strawberry_fields_geometry',
-  assetId: 'users/kevinlc3/strawberry_fields_geometry'
-});
-*/
