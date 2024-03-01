@@ -14,10 +14,6 @@ for (var i = 0; i < 98; i++) {
 }
 
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
-
-function clipToRegion(image) {
-    return image.clip(clippingRegion);
-  }
   
 function maskS2clouds(image) {
   var qa = image.select('QA60');
