@@ -17,7 +17,7 @@ var visualization = {
 };
 var sz = sv_gol.size().getInfo()
 var ls = sv_gol.toList(sz)
-/*
+
 function addImage(image) { // display each image in collection
   var id = image.id
   var image = ee.Image(image.id)
@@ -27,6 +27,5 @@ function addImage(image) { // display each image in collection
 sv_gol.evaluate(function(img) {  // use map on client-side
   img.features.map(addImage)
 })
-*/
-Map.addLayer(sv_gol.first())
+
 Map.centerObject(sv_gol)
