@@ -109,7 +109,7 @@ for (var i = 0; i < len; i += stride) {
   //##############################################################
 
   batch.Download.ImageCollection.toAsset(smoothed, 'denmark_wheat_smoothed', {
-    name: 'tile_' + i,
+    name: 'S2_{system_date}_tile_' + i,
     scale: 30,
     maxPixels: 1e13
   });
