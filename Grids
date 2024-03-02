@@ -2,9 +2,17 @@ var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
 var filename_base = "wheatfields_tile";
+var filename = "Denmark_Full_Grids";
+
 var batch_list = []
 for (var i = 0; i < 98; i++) {
   if (i != 13) {  batch_list.push(folder_path + filename_base + i); }
 }
 
-var final_collection = gpp_utils.mergeCollections(folder_path)
+var final_collection = gpp_utils.mergeCollection(folder_path, batch_list);
+Map.addLayer(final_collection);
+Export.table.toAsset({
+  collection: final_collection,
+  description: "Crop Sequence and CDL defined boundaries for California Strawberry Fields in 2021",
+  assetId: filename
+});
