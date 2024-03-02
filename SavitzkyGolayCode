@@ -41,7 +41,7 @@ function formatDate(feature) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = batch_list.length;
-for (var i = 2; i < 4; i++) {
+for (var i = 4; i < 6; i++) {
   
   var geometry = ee.FeatureCollection(batch_list[i]).geometry().dissolve()
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
