@@ -42,7 +42,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetFolder = root+'/'
   }
     
-  var v = 12
+  var v = 11
     
   var colList = collection.toList(v);
   
@@ -64,7 +64,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = grids.size().getInfo();
-var stride = Math.floor(len / 3);
+var stride = Math.floor(len / 11);
 var batch_list = grids.toList(len);
 
 for (var i = 0; i < len; i += stride) {
