@@ -33,8 +33,8 @@ function formatDate(feature) {
   return ee.Date(feature.get('system:time_start')).format('YYYY-MM-dd');
 }
 
+var root = ee.data.getAssetRoots()[0]['id']
 var imagecollectiondownload = function(collection, assetFolder, tileno) {
-  var root = ee.data.getAssetRoots()[0]['id']
   var folder = assetFolder
   if (folder !== null && folder !== undefined) {
     var assetFolder = root+'/'+folder+'/'
@@ -42,13 +42,13 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetFolder = root+'/'
   }
     
-  var n = collection.size().getInfo();
+  var v = collection.size().getInfo();
     
-  var colList = collection.toList(n);
+  var colList = collection.toList(v);
   
-  for (var i = 0; i < n; i++) {
+  for (var i = 0; i < v; i++) {
     var img = ee.Image(colList.get(i));
-    var id = img.id().getInfo() || 'denmark_image_tile'+ i.toString() + '_' + tileno.toString();
+    var id = 'denmark_image_tile'+ i.toString() + '_' + tileno.toString();
     var assetId = assetFolder+id
     
     Export.image.toAsset({
