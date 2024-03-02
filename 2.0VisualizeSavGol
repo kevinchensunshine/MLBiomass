@@ -24,3 +24,4 @@ function addImage(image) { // display each image in collection
 
 Map.addLayer(sv_gol)
 Map.addLayer(wheatfields)
+Map.centerObject(sv_gol)
