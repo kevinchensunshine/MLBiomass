@@ -23,7 +23,15 @@ for (var i=0; i < gridSize; i++){
   var croplandcover = euromap_cell.select('classification')
   var wheatlandcovermask = croplandcover.eq(211)
   var wheatfields = euromap_cell.updateMask(wheatlandcovermask);
-  var wheatfields_shapes = wheatfields.reduceToVectors({	    geometry: denmark_bound,	    scale: 30,	    maxPixels: 1e9,	    bestEffort: true,	    eightConnected: true,	    tileScale: 4	  });
+  var wheatfields_shapes = wheatfields.reduceToVectors({
+    geometry: denmark_bound,
+    scale: 30,
+    maxPixels: 1e9,
+    bestEffort: true,
+    eightConnected: true,
+    tileScale: 4
+    });
+    
   Export.table.toAsset({
   collection: wheatfields_shapes,	    description: 'wheatfields',	    assetId: folderpath + 'wheatfields_tile' + i	  });	
   
