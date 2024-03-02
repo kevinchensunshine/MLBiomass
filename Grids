@@ -6,7 +6,7 @@ var filename = "Denmark_Full_Grids";
 
 var batch_list = []
 for (var i = 0; i < 98; i++) {
-  if (i != 13) {  batch_list.push(folder_path + filename_base + i); }
+  if (i != 13) {  batch_list.push(filename_base + i); }
 }
 
 var final_collection = gpp_utils.mergeCollection(folder_path, batch_list);
