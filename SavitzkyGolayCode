@@ -37,7 +37,7 @@ function formatDate(feature) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = grids.size().getInfo();
-var stride = len / 9;
+var stride = len / 4;
 var batch_list = grids.toList(len);
 for (var i = 0; i < len; i += stride) {
   
