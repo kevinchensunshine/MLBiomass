@@ -2,7 +2,7 @@
 var sv_gol = ee.ImageCollection("users/kevinlc3/denmark_wheat_smoothed"),
     euromap_2018 = ee.Image("JRC/D5/EUCROPMAP/V1/2018");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');	
+var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018').clip(sv_gol.geometry());	
 var croplandcover = euromap_2018.select('classification')
 var wheatlandcovermask = croplandcover.eq(211)
 var wheatfields = euromap_2018.updateMask(wheatlandcovermask);
