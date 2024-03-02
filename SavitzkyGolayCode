@@ -4,13 +4,13 @@ var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
 var filename_base = "wheatfields_tile";
-var batch_list = ee.List()
+var batch_list = ee.List([ee.Feature(null)])
 var imagecollection_dest_path = 'users/kevinlc3/denmark_wheat_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
             
 for (var i = 0; i < 98; i++) {
-  if (i != 13) {  batch_list.add(folder_path + filename_base + i); }
+  if (i != 13) {  batch_list.add(ee.Feature(folder_path + filename_base + i)); }
 }
 
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
@@ -40,7 +40,7 @@ function formatDate(feature) {
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
-var len = batch_list.size().getInfo();
+var len = batch_list.length;
 var stride = 4;
 for (var i = 6; i < 6 + stride * 2; i += stride) {
   
