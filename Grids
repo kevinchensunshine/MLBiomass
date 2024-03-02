@@ -1,5 +1,10 @@
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
+
+var folder_path = "users/kevinlc3/DenmarkStudy/";
+var filename_base = "wheatfields_tile";
+var batch_list = []
 for (var i = 0; i < 98; i++) {
-  
+  if (i != 13) {  batch_list.push(folder_path + filename_base + i); }
 }
-var final_collection
+
+var final_collection = gpp_utils.mergeCollections(folder_path)
