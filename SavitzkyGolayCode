@@ -36,71 +36,81 @@ function formatDate(feature) {
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
+var len = grids.size().getInfo();
+var stride = len / 3;
+var batch_list = grids.toList(len);
 
-var geometry = ee.FeatureCollection(batch_list).geometry().dissolve();
+for (var i = 0; i < len; i += stride) {
+  
+  var end = i + stride;
+  if (end > len) {
+      end = len;
+  }
+  var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
+  
+  var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
-var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
+  var startDate_one = ee.Date('2018-09-01')
+  var endDate_one = ee.Date('2018-12-31')
+  
+  var filtered_one = s2
+    .filter(ee.Filter.date(startDate_one, endDate_one))
+    .filter(ee.Filter.bounds(geometry))
+  
+  var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+                    .map(maskS2clouds)
+                    .map(addNDVI)
+  var filtered_s2images = filtered_one.select(bands);
+  
+  //##############################################################
+  // Step-2: Apply an SGFilter
+  //##############################################################
+  
+  // Select the interval. We will have 1 image every n days
+  var n = 3
+  
+  var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
+  
+  //##############################################################
+  // Step-5: Apply Savitzky-Golay filter
+  //##############################################################
+  
+  var order = 5
+  var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
+  
+  // Select the d_0_ndvi band and rename it
+  var d_0_bands = ['d_0_B2',
+                    'd_0_B3', 
+                    'd_0_B4', 
+                    'd_0_B5',
+                    'd_0_B6',
+                    'd_0_B7',
+                    'd_0_B8',
+                    'd_0_B8A',
+                    'd_0_B11',
+                    'd_0_B12', 
+                    'd_0_NDVI'];
+                    
+  var smoothed_bands = ['smoothed_B2',
+                    'smoothed_B3', 
+                    'smoothed_B4', 
+                    'smoothed_B5',
+                    'smoothed_B6',
+                    'smoothed_B7',
+                    'smoothed_B8',
+                    'smoothed_B8A',
+                    'smoothed_B11',
+                    'smoothed_B12', 
+                    'smoothed_NDVI'];
+  
+  var smoothed = smoothed.select(d_0_bands, smoothed_bands)
+  //##############################################################
+  // Step-6: Visualize the results
+  //##############################################################
 
-var startDate_one = ee.Date('2018-09-01')
-var endDate_one = ee.Date('2018-12-31')
-
-var filtered_one = s2
-  .filter(ee.Filter.date(startDate_one, endDate_one))
-  .filter(ee.Filter.bounds(geometry))
-
-var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
-                  .map(maskS2clouds)
-                  .map(addNDVI)
-var filtered_s2images = filtered_one.select(bands);
-
-//##############################################################
-// Step-2: Apply an SGFilter
-//##############################################################
-
-// Select the interval. We will have 1 image every n days
-var n = 3
-
-var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
-
-//##############################################################
-// Step-5: Apply Savitzky-Golay filter
-//##############################################################
-
-var order = 5
-var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
-
-// Select the d_0_ndvi band and rename it
-var d_0_bands = ['d_0_B2',
-                  'd_0_B3', 
-                  'd_0_B4', 
-                  'd_0_B5',
-                  'd_0_B6',
-                  'd_0_B7',
-                  'd_0_B8',
-                  'd_0_B8A',
-                  'd_0_B11',
-                  'd_0_B12', 
-                  'd_0_NDVI'];
-                  
-var smoothed_bands = ['smoothed_B2',
-                  'smoothed_B3', 
-                  'smoothed_B4', 
-                  'smoothed_B5',
-                  'smoothed_B6',
-                  'smoothed_B7',
-                  'smoothed_B8',
-                  'smoothed_B8A',
-                  'smoothed_B11',
-                  'smoothed_B12', 
-                  'smoothed_NDVI'];
-
-var smoothed = smoothed.select(d_0_bands, smoothed_bands)
-//##############################################################
-// Step-6: Visualize the results
-//##############################################################
-
-batch.Download.ImageCollection.toAsset(smoothed, 'denmark_wheat_smoothed', {
-  name: 'S2_denmark_{system_date}',
-  scale: 30,
-  maxPixels: 1e13
-});
+  batch.Download.ImageCollection.toAsset(smoothed, 'denmark_wheat_smoothed', {
+    name: 'S2_{system_date}_tile_' + i,
+    scale: 30,
+    maxPixels: 1e13
+  });
+}
