@@ -42,7 +42,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetFolder = root+'/'
   }
     
-  var v = collection.size().getInfo();
+  var v = 80
     
   var colList = collection.toList(v);
   
