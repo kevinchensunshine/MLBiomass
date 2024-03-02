@@ -105,7 +105,7 @@ for (var i = 2; i < 4; i++) {
   //##############################################################
 
   batch.Download.ImageCollection.toAsset(smoothed, 'denmark_wheat_smoothed', {
-    name: '2_tile_' + i,
+    name: 'tile_' + i,
     scale: 30
   });
 }
