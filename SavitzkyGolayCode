@@ -41,9 +41,15 @@ function formatDate(feature) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = batch_list.length;
-for (var i = 4; i < 6; i++) {
+var stride = 4;
+for (var i = 4; i < 13; i += stride) {
   
-  var geometry = ee.FeatureCollection(batch_list[i]).geometry().dissolve()
+  var end = i + stride;
+  if (end > n) {
+      end = n;
+  }
+  var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
+  
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
   var startDate_one = ee.Date('2018-09-01')
