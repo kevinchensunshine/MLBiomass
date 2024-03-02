@@ -94,7 +94,7 @@ for (var i = 0; i < len; i += stride) {
   //##############################################################
   
   // Select the interval. We will have 1 image every n days
-  var n = 3
+  var n = 7
   
   var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
   
