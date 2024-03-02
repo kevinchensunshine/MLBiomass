@@ -8,8 +8,6 @@ var wheatlandcovermask = croplandcover.eq(211)
 var wheatfields = euromap_2018.updateMask(wheatlandcovermask);
 	
 
-Map.addLayer(wheatfields)
-
 var visualization = {
   min: 0.0,
   max: 0.3,
@@ -24,8 +22,5 @@ function addImage(image) { // display each image in collection
   Map.addLayer(image)
 }
 
-sv_gol.evaluate(function(img) {  // use map on client-side
-  img.features.map(addImage)
-})
-
-Map.centerObject(sv_gol)
+Map.addLayer(sv_gol)
+Map.addLayer(wheatfields)
