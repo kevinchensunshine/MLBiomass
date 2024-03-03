@@ -59,6 +59,8 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
   }
 }
 
+var day_of_in
+
 //##############################################################
 // Step-1: Prepare a NDVI time-series
 //##############################################################
