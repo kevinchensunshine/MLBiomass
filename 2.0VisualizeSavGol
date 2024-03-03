@@ -23,7 +23,7 @@ function addImage(image) { // display each image in collection
   Map.addLayer(image)
 }
 
-Map.addLayer(sv_gol)
+Map.addLayer(sv_gol, visualization)
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
 Map.centerObject(sv_gol)
