@@ -33,33 +33,6 @@ function formatDate(feature) {
   return ee.Date(feature.get('system:time_start')).format('YYYY-MM-dd');
 }
 
-var root = ee.data.getAssetRoots()[0]['id']
-var imagecollectiondownload = function(collection, assetFolder, tileno) {
-  var folder = assetFolder
-  if (folder !== null && folder !== undefined) {
-    var assetFolder = root+'/'+folder+'/'
-  } else {
-    var assetFolder = root+'/'
-  }
-    
-  var v = 11
-    
-  var colList = collection.toList(v);
-  
-  for (var i = 0; i < v; i++) {
-    var img = ee.Image(colList.get(i));
-    var id = 'denmark_image_tile'+ i.toString() + '_' + tileno.toString();
-    var assetId = assetFolder+id
-    
-    Export.image.toAsset({
-      image: img,
-      description: id,
-      assetId: assetId,
-      scale: 30
-    })
-  }
-}
-
 var startDate_one = ee.Date('2018-09-01')
 var endDate_one = ee.Date('2018-12-31')
 var day_of_interest = '2018-10-01'
@@ -139,6 +112,7 @@ for (var i = 0; i < len; i += stride) {
   
   Export.image.toAsset({
     image: image_of_interest,
+    scale: 30,
     description: "Day_Generation_SavGol_" + day_of_interest,
     assetId: imagecollection_dest_path + '/' + day_of_interest + '_' + i,
     maxPixels: 10000000000000
