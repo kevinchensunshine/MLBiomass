@@ -138,7 +138,7 @@ for (var i = 0; i < len; i += stride) {
   
   Export.image.toAsset({
     image: image_of_interest,
-    descript: "Day_Generation_SavGol_" + day_of_interest,
+    description: "Day_Generation_SavGol_" + day_of_interest,
     assetId: imagecollection_dest_path + '/' + day_of_interest + '_' + i
   })
 }
