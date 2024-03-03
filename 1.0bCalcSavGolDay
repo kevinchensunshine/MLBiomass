@@ -5,7 +5,7 @@ var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
 var filename_base = "wheatfields_tile";
-var imagecollection_dest_path = 'users/kevinlc3/denmark_wheat_smoothed'
+var imagecollection_dest_path = 'users/kevinlc3/savgol_daygen_demo'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
 
@@ -59,7 +59,9 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
   }
 }
 
-var day_of_in
+var startDate_one = ee.Date('2018-09-01')
+var endDate_one = ee.Date('2018-12-31')
+var day_of_interest = '2018-10-01'
 
 //##############################################################
 // Step-1: Prepare a NDVI time-series
@@ -77,9 +79,6 @@ for (var i = 0; i < len; i += stride) {
   var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
-
-  var startDate_one = ee.Date('2018-09-01')
-  var endDate_one = ee.Date('2018-12-31')
   
   var filtered_one = s2
     .filter(ee.Filter.date(startDate_one, endDate_one))
@@ -95,7 +94,7 @@ for (var i = 0; i < len; i += stride) {
   //##############################################################
   
   // Select the interval. We will have 1 image every n days
-  var n = 7
+  var n = 1
   
   var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
   
@@ -135,6 +134,11 @@ for (var i = 0; i < len; i += stride) {
   //##############################################################
   // Step-6: Visualize the results
   //##############################################################
-
-  imagecollectiondownload(smoothed, 'denmark_wheat_smoothed', i);
+  var image_of_interest = smoothed.filterDate(day_of_interest, ee.Date(day_of_interest).advance(1, 'day')).first()
+  
+  Export.image.toAsset({
+    image: image_of_interest,
+    descript: "Day_Generation_SavGol_" + day_of_interest,
+    assetId: imagecollection_dest_path + '/' + day_of_interest + '_' + i
+  })
 }
