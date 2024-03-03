@@ -140,6 +140,6 @@ for (var i = 0; i < len; i += stride) {
     image: image_of_interest,
     description: "Day_Generation_SavGol_" + day_of_interest,
     assetId: imagecollection_dest_path + '/' + day_of_interest + '_' + i,
-    maxPixels: 37842166724310
+    maxPixels: 10000000000000
   })
 }
