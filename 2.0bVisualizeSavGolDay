@@ -17,13 +17,7 @@ var visualization = {
 var sz = sv_gol.size().getInfo();
 var sv_gol_list = sv_gol.toList(sz);
 
-function addimg(image) {
-  Map.addLayer(ee.Image(image), visualization);
-}
-
-for (var i = 0; i < sz; i++) {
-  addimg(sv_gol_list.get(i))
-}
+Map.addLayer(sv_gol)
 
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
