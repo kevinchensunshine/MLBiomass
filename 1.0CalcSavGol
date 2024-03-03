@@ -55,7 +55,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
       image: img,
       description: id,
       assetId: assetId,
-      scale: 30,
+      scale: 30
     })
   }
 }
