@@ -23,7 +23,8 @@ function addImage(image) { // display each image in collection
   Map.addLayer(image)
 }
 
-Map.addLayer(sv_gol, visualization)
+
+Map.addLayer(sv_gol.filterDate('2018-09-01', ee.Date('2018-09-01').advance(7, 'day')), visualization)
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
-Map.centerObject(sv_gol)
+Map.centerObject(sv_gol).filterDate()
