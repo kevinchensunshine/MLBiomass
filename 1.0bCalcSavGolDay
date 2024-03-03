@@ -1,3 +1,7 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
+    grids = ee.FeatureCollection("users/kevinlc3/Denmark_Full_Grids");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
 var filename_base = "wheatfields_tile";
