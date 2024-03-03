@@ -46,7 +46,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     
   var colList = collection.toList(v);
   
-  for (var i = 0; i < v; i++) {
+  for (var i = 334306; i < v; i++) {
     var img = ee.Image(colList.get(i));
     var id = 'denmark_image_tile'+ i.toString() + '_' + tileno.toString();
     var assetId = assetFolder+id
