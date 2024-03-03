@@ -77,7 +77,7 @@ for (var i = 0; i < len; i += stride) {
   if (end > len) {
       end = len;
   }
-  var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
+  var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry();
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
   
