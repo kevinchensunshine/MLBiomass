@@ -1,5 +1,5 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var denmarkgeos = ee.FeatureCollection("users/kevinlc3/Denmark_Full_Grids");
+var denmarkgeos = ee.ImageCollection("users/kevinlc3/savgol_daygen_demo");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var filepath = 'users/kevinlc3/savgol_daygen_demo'
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018')
