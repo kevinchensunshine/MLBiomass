@@ -55,7 +55,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
       image: img,
       description: id,
       assetId: assetId,
-      maxPixels: 37842166724310
+      maxPixels: 1e13
     })
   }
 }
