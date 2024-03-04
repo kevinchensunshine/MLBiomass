@@ -30,10 +30,10 @@ Map.addLayer(grid,{}, 'grid');
 500	#e8ffbf	Grasslands
 */
 var croplandcover = euromap_2018.select('classification')
-var cropscovermask = croplandcover.eq(212)
+var cropscovermask = croplandcover.eq(213)
 var crops = euromap_2018.updateMask(cropscovermask);
 Map.addLayer(crops);
-Map.centerObject(crops, 15);
+Map.centerObject(crops);
 
 var folderpath='users/kevinlc3/DenmarkStudy/';
 var imageBaseName='crop_shapes';
@@ -58,8 +58,8 @@ for (var i = 0; i < gridSize; i++){
   
   Export.table.toAsset({
     collection: wheatfields_shapes,
-    description: 'wheatfields',
-    assetId: folderpath + 'durumwheat_tile' + i
+    description: 'barley',
+    assetId: folderpath + 'barley_tile' + i
   });
 }
 
