@@ -22,5 +22,7 @@ Map.centerObject(sv_gol)
 var assetId = 'users/kevinlc3/smoothed_wheat_10-1-2018'
 Export.image.toAsset({
   image: sv_gol,
-  
+  assetId: assetId,
+  scale: 30,
+  maxPixels: 1e13
 })
