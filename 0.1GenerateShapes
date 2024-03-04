@@ -50,7 +50,7 @@ for (var i = 0; i < gridSize; i++){
   var wheatfields_shapes = wheatfields.reduceToVectors({
     geometry: denmark_bound,
     scale: 10, // Adjust the scale based on your data's resolution
-    maxPixels: 1e9,
+    maxPixels: 1e13,
     bestEffort: true,
     eightConnected: true,
     tileScale: 4
