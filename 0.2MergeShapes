@@ -1,12 +1,12 @@
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
-var filename_base = "barley_tile";
-var filename = "BarleyShapes";
+var filename_base = "rye_tile";
+var filename = "RyeShapes";
 
 var batch_list = []
 for (var i = 0; i < 98; i++) {
-  if (i != 13 && i != 14) {  batch_list.push(filename_base + i); }
+  if (i != 3 && i != 13 && i != 14 && i != 24 && i != 63 && i != 64 && i != 90) {  batch_list.push(filename_base + i); }
 }
 
 var final_collection = gpp_utils.mergeCollection(folder_path, batch_list);
