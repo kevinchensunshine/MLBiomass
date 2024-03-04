@@ -3,7 +3,7 @@ var grid = ee.FeatureCollection("users/kevinlc3/denmark_grids");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
-var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
+var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018').clip(denmark_bound);
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
 /*
@@ -33,7 +33,7 @@ var croplandcover = euromap_2018.select('classification')
 var cropscovermask = croplandcover.eq(212)
 var crops = euromap_2018.updateMask(cropscovermask);
 Map.addLayer(crops);
-Map.centerObject(crops);
+Map.centerObject(crops, 15);
 
 var folderpath='users/kevinlc3/DenmarkStudy/';
 var imageBaseName='crop_shapes';
