@@ -17,7 +17,7 @@ var visualization = {
 var sz = sv_gol.size().getInfo();
 var sv_gol_list = sv_gol.toList(sz);
 
-Map.addLayer(sv_gol)
+Map.addLayer(sv_gol, visualization)
 
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
