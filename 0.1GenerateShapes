@@ -29,10 +29,10 @@ var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
 */
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
-var croplandcover = euromap_cell.select('classification')
+var croplandcover = euromap_2018.select('classification')
 var cropscovermask = croplandcover.eq(212)
-var crops = euromap_cell.updateMask(cropscovermask);
-Map.addLayer(wheatfields);
+var crops = euromap_2018.updateMask(cropscovermask);
+Map.addLayer(crops);
 
 var folderpath='users/kevinlc3/DenmarkStudy/';
 var imageBaseName='crop_shapes';
