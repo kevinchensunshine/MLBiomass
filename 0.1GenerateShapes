@@ -58,7 +58,7 @@ for (var i = 0; i < gridSize; i++){
   Export.table.toAsset({
     collection: wheatfields_shapes,
     description: 'wheatfields',
-    assetId: folderpath + 'wheatfields_tile' + i
+    assetId: folderpath + 'durumwheat_tile' + i
   });
 }
 
