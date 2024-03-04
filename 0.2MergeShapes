@@ -1,7 +1,7 @@
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
-var filename_base = "wheatfields_tile";
+var filename_base = "barley_tile";
 var filename = "BarleyShapes";
 
 var batch_list = []
