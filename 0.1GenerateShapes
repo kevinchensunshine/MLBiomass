@@ -30,7 +30,7 @@ Map.addLayer(grid,{}, 'grid');
 500	#e8ffbf	Grasslands
 */
 var croplandcover = euromap_2018.select('classification')
-var cropscovermask = croplandcover.eq(213)
+var cropscovermask = croplandcover.eq(214)
 var crops = euromap_2018.updateMask(cropscovermask);
 Map.addLayer(crops);
 Map.centerObject(crops);
@@ -58,8 +58,8 @@ for (var i = 0; i < gridSize; i++){
   
   Export.table.toAsset({
     collection: wheatfields_shapes,
-    description: 'barley',
-    assetId: folderpath + 'barley_tile' + i
+    description: 'rye',
+    assetId: folderpath + 'rye_tile' + i
   });
 }
 
