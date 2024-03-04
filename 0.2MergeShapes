@@ -13,6 +13,6 @@ var final_collection = gpp_utils.mergeCollection(folder_path, batch_list);
 Map.addLayer(final_collection);
 Export.table.toAsset({
   collection: final_collection,
-  description: "Crop Sequence and CDL defined boundaries for California Strawberry Fields in 2021",
+  description: "Denmark defined boundaries for Barley",
   assetId: filename
 });
