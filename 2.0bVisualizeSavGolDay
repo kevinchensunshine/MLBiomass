@@ -6,7 +6,7 @@ var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018')
 var croplandcover = euromap_2018.select('classification')
 var wheatlandcovermask = croplandcover.eq(211)
 var wheatfields = euromap_2018.updateMask(wheatlandcovermask);
-var sv_gol = ee.ImageCollection(filepath)
+var sv_gol = ee.ImageCollection(filepath).mosaic()
 
 var visualization = {
   min: 0.0,
@@ -14,11 +14,7 @@ var visualization = {
   bands: ['smoothed_B4', 'smoothed_B3', 'smoothed_B2'],
 };
 
-var sz = sv_gol.size().getInfo();
-var sv_gol_list = sv_gol.toList(sz);
-
 Map.addLayer(sv_gol, visualization)
-
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
 Map.centerObject(sv_gol)
