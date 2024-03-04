@@ -18,3 +18,9 @@ Map.addLayer(sv_gol, visualization)
 Map.addLayer(denmarkgeos)
 Map.addLayer(wheatfields)
 Map.centerObject(sv_gol)
+
+var assetId = 'users/kevinlc3/smoothed_wheat_10-1-2018'
+Export.image.toAsset({
+  image: sv_gol,
+  
+})
