@@ -4,7 +4,29 @@ var grid = ee.FeatureCollection("users/kevinlc3/denmark_grids");
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
-
+/*
+211	#a57000	Common wheat
+212	#896054	Durum wheat
+213	#e2007c	Barley
+214	#aa007c	Rye
+215	#a05989	Oats
+216	#ffd300	Maize
+217	#00a8e2	Rice
+218	#d69ebc	Triticale
+219	#d69ebc	Other cereals
+221	#dda50a	Potatoes
+222	#a800e2	Sugar beet
+223	#00af49	Other root crops
+230	#00af49	Other non-permanent industrial crops
+231	#ffff00	Sunflower
+232	#d1ff00	Rapeseed and turnip rapeseed
+233	#267000	Soya
+240	#f2a377	Dry pulses
+250	#e8bfff	Fodder crops (cereals and leguminous)
+290	#696969	Bare arable land
+300	#93cc93	Woodland and Shrubland (incl. permanent crops)
+500	#e8ffbf	Grasslands
+*/
 Map.addLayer(denmark_bound,{}, 'roi');
 Map.addLayer(grid,{}, 'grid');
 
@@ -21,7 +43,7 @@ for (var i=0; i < gridSize; i++){
   var euromap_cell = euromap_2018.clip(gridCell)
 
   var croplandcover = euromap_cell.select('classification')
-  var wheatlandcovermask = croplandcover.eq(211)
+  var wheatlandcovermask = croplandcover.eq(212)
   var wheatfields = euromap_cell.updateMask(wheatlandcovermask);
   
   var wheatfields_shapes = wheatfields.reduceToVectors({
