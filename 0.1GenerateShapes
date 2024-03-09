@@ -30,9 +30,15 @@ Map.addLayer(grid,{}, 'grid');
 500	#e8ffbf	Grasslands
 */
 var croplandcover = euromap_2018.select('classification')
-var cropscovermask = croplandcover.eq(214)
+var cropscovermask = croplandcover.neq(240)
+cropscovermask = cropscovermask.neq(250)
+cropscovermask = cropscovermask.neq(290)
+cropscovermask = cropscovermask.neq(300)
+cropscovermask = cropscovermask.neq(500)
+
 var crops = euromap_2018.updateMask(cropscovermask);
 Map.addLayer(crops);
+print(crops)
 Map.centerObject(crops);
 
 var folderpath='users/kevinlc3/DenmarkStudy/';
