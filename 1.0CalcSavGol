@@ -1,6 +1,6 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
-    grids = ee.FeatureCollection("users/kevinlc3/Denmark_Full_Grids");
+    grids = ee.FeatureCollection("users/kevinlc3/WheatfieldShapes");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
@@ -46,7 +46,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     
   var colList = collection.toList(v);
   
-  for (var i = 334306; i < v; i++) {
+  for (var i = 0; i < v; i++) {
     var img = ee.Image(colList.get(i));
     var id = 'denmark_image_tile'+ i.toString() + '_' + tileno.toString();
     var assetId = assetFolder+id
@@ -67,7 +67,7 @@ var len = grids.size().getInfo();
 var stride = Math.floor(len / 11);
 var batch_list = grids.toList(len);
 
-for (var i = 0; i < len; i += stride) {
+for (var i = 334306; i < len; i += stride) {
   
   var end = i + stride;
   if (end > len) {
