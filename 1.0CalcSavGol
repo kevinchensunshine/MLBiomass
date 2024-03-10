@@ -4,8 +4,8 @@ var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
-var filename_base = "wheatfields_tile";
-var imagecollection_dest_path = 'users/kevinlc3/denmark_wheat_smoothed'
+var filename_base = "full_tile";
+var imagecollection_dest_path = 'users/kevinlc3/full_wheat_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
 
@@ -42,7 +42,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetFolder = root+'/'
   }
     
-  var v = 11
+  var v = 12
     
   var colList = collection.toList(v);
   
@@ -55,7 +55,8 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
       image: img,
       description: id,
       assetId: assetId,
-      maxPixels: 1e13
+      maxPixels: 1e13,
+      scale: 10
     })
   }
 }
