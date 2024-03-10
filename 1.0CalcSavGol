@@ -5,7 +5,7 @@ var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
 
 var folder_path = "users/kevinlc3/DenmarkStudy/";
 var filename_base = "full_tile";
-var imagecollection_dest_path = 'users/kevinlc3/full_wheat_smoothed'
+var imagecollection_dest_path = 'users/kevinlc3/full_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
 
@@ -65,10 +65,13 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = grids.size().getInfo();
-var stride = Math.floor(len / 40);
+var stride = Math.floor(len / 10);
 var batch_list = grids.toList(len);
+var startDate_one = ee.Date('2018-09-01')
+var endDate_one = ee.Date('2018-12-31')
+s2 = s2.filterDate(startDate_one, endDate_one)
 
-for (var i = 334306; i < len; i += stride) {
+for (var i = 0; i < len; i += stride) {
   
   var end = i + stride;
   if (end > len) {
@@ -78,13 +81,8 @@ for (var i = 334306; i < len; i += stride) {
   var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
-
-  var startDate_one = ee.Date('2018-09-01')
-  var endDate_one = ee.Date('2018-12-31')
   
-  var filtered_one = s2
-    .filter(ee.Filter.date(startDate_one, endDate_one))
-    .filter(ee.Filter.bounds(geometry))
+  var filtered_one = s2.filterBounds(geometry)
   
   var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                     .map(maskS2clouds)
