@@ -1,0 +1,98 @@
+// Your initial setup
+var year = '2022'
+var csbca22 = ee.FeatureCollection("projects/nass-csb/assets/csb1522/CSBCA1522");
+var california_bound = ee.FeatureCollection('TIGER/2016/States')
+            .filter(ee.Filter.eq('NAME', 'California'));
+var cdl = ee.ImageCollection('USDA/NASS/CDL')
+                  .filter(ee.Filter.date(year + '-01-01', year + '-12-01'))
+                  .filterBounds(california_bound)
+                  .first();
+                  
+function filterStrawberryFields(featureCollection) {
+
+  // Function to check if strawberries are the majority crop
+  var isMajorityStrawberries = function(feature) {
+    // Reduce the CDL image to a frequency histogram within the feature's bounds
+    var histogram = cdl.select('cropland').reduceRegion({
+      reducer: ee.Reducer.frequencyHistogram(),
+      geometry: feature.geometry(),
+      scale: 30,  // Adjust as needed
+      maxPixels: 1e9
+    });
+
+    // Get the histogram of the 'cropland' band and find the most frequent crop type
+    var cropHistogram = ee.Dictionary(histogram.get('cropland'));
+    // Sort the dictionary by value to find the most frequent crop type
+    var sorted_keys = cropHistogram.keys().sort(cropHistogram.values())
+    var lastIndex = sorted_keys.size().subtract(1);
+    var mostFrequentCrop = ee.String(sorted_keys.get(lastIndex));
+    // Check if the most frequent crop type is strawberries (221)
+    return feature.set('isMajorityStrawberries', mostFrequentCrop.equals('221'));
+  };
+
+  // Map the function over the FeatureCollection
+  var updatedCollection = featureCollection.map(isMajorityStrawberries);
+
+  // Filter to keep only features where strawberries are the majority
+  return updatedCollection.filter(ee.Filter.eq('isMajorityStrawberries', true));
+}
+
+var csbca22_cali = csbca22.filter(ee.Filter.eq('R22', 221)).filterBounds(california_bound);
+var strawberryFields = filterStrawberryFields(csbca22_cali).select('R22');
+print(csbca22_cali.size())
+print(strawberryFields.size())
+
+var assetId = 'majority_vote_filtered_strawberries' + year;
+Export.table.toAsset({
+  collection: strawberryFields,
+  description: 'majority_vote_filtered_strawberries' + year,
+  assetId: assetId
+});
+
+Map.addLayer(strawberryFields);
+/*
+// Filter for strawberry fields
+var strawberry_layer_csbca22 = csbca22.filter(ee.Filter.eq('R17', 221));
+
+// Visualization Parameters
+var visParams = {
+  color: 'black',
+  fillColor: 'ff0000' // Red fill color
+};
+
+// Adding layers to the map
+Map.addLayer(strawberry_layer_csbca22, visParams, "Strawberry Fields");
+
+// Mask the CDL image to keep only strawberry classified areas
+var cropLandcover = cdl.select('cropland')
+// Create a mask where the cropland is equal to 211 (strawberries)
+var strawberriesMask = cropLandcover.eq(221);
+// Apply the mask to the dataset
+var strawberries = cropLandcover.updateMask(strawberriesMask);
+
+
+// Add masked CDL to the map
+Map.addLayer(strawberries, {}, 'CDL Strawberry Areas');
+
+var vectorStrawberryFields = strawberries.reduceToVectors({
+  geometry: strawberry_layer_csbca22.geometry(),
+  scale: 30, // Adjust the scale based on your data's resolution
+  maxPixels: 1e9
+});
+
+
+// Process each strawberry field
+var strawberry_geom = vectorStrawberryFields.geometry();
+
+var majority_vote_strawberies = strawberry_layer_csbca22.map(function(feature) {
+  return feature.intersection(strawberry_geom, 1);
+});
+
+var state_outline = Map.addLayer(majority_vote_strawberies, visParams, "majority vote") 
+
+print(majority_vote_strawberies.first())
+
+var batch = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib')
+
+batch.batchFeatureCollection(majority_vote_strawberies, null, 'users/kevinlc3/csbca_strawberries_field_level_' + year, 40);
+*/
