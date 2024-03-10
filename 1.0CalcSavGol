@@ -135,5 +135,5 @@ for (var i = 0; i < len; i += stride) {
   // Step-6: Visualize the results
   //##############################################################
 
-  imagecollectiondownload(smoothed, 'denmark_wheat_smoothed', i);
+  imagecollectiondownload(smoothed, 'full_smoothed', i);
 }
