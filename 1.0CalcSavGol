@@ -65,7 +65,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 // Step-1: Prepare a NDVI time-series
 //##############################################################
 var len = grids.size().getInfo();
-var stride = Math.floor(len / 11);
+var stride = Math.floor(len / 40);
 var batch_list = grids.toList(len);
 
 for (var i = 334306; i < len; i += stride) {
@@ -74,6 +74,7 @@ for (var i = 334306; i < len; i += stride) {
   if (end > len) {
       end = len;
   }
+  
   var geometry = ee.FeatureCollection(batch_list.slice(i, end)).geometry().dissolve();
   
   var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
