@@ -2,19 +2,27 @@
 var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20"),
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
-var points = poi.select('GPS')
+var points = poi
+
+function format_date(date) {
+  var tokens = ee.String(date).split('/')
+  return ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+}
 
 var extract_loc = function(feature) {
   var val = ee.Feature(feature).get('GPS')
+  var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
   var locs = ee.String(val).split(', ')
+  
   var x = locs.get(0)
   var y = locs.get(1)
   var x = ee.Number.parse(locs.get(0));
   var y = ee.Number.parse(locs.get(1));
-  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
 }
 
-var geolocated_points = ee.FeatureCollection(points.map(extract_loc))
+var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
+print(geolocated_points)
 
 var imagecollection_dest_path = 'users/kevinlc3/full_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
