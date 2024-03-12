@@ -1,7 +1,8 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var sv_gol = ee.ImageCollection("users/kevinlc3/denmark_wheat_smoothed"),
     euromap_2018 = ee.Image("JRC/D5/EUCROPMAP/V1/2018"),
-    denmarkgeos = ee.FeatureCollection("users/kevinlc3/Denmark_Full_Grids");
+    denmarkgeos = ee.FeatureCollection("users/kevinlc3/Denmark_Full_Grids"),
+    sv_gol_full = ee.ImageCollection("users/kevinlc3/full_smoothed");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018')
 var croplandcover = euromap_2018.select('classification')
@@ -14,8 +15,8 @@ var visualization = {
   max: 0.3,
   bands: ['smoothed_B4', 'smoothed_B3', 'smoothed_B2'],
 };
-var sz = sv_gol.size().getInfo()
-var ls = sv_gol.toList(sz)
+var sz = sv_gol_full.size().getInfo()
+var ls = sv_gol_full.toList(sz)
 
 function addImage(image) { // display each image in collection
   var id = image.id
@@ -24,7 +25,6 @@ function addImage(image) { // display each image in collection
 }
 
 
-Map.addLayer(sv_gol.filterDate('2018-09-01', ee.Date('2018-09-01').advance(7, 'day')), visualization)
-Map.addLayer(denmarkgeos)
+Map.addLayer(sv_gol_full.filterDate('2018-09-01', ee.Date('2018-09-01').advance(7, 'day')), visualization)
 Map.addLayer(wheatfields)
-Map.centerObject(sv_gol)
+Map.centerObject(sv_gol_full)
