@@ -16,10 +16,6 @@ var extract_loc = function(feature) {
 
 var geolocated_points = ee.FeatureCollection(points.map(extract_loc))
 
-Map.addLayer(geolocated_points)
-Map.centerObject(geolocated_points)
-print(geolocated_points)
-
 var imagecollection_dest_path = 'users/kevinlc3/full_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
             .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
@@ -56,7 +52,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetFolder = root+'/'
   }
     
-  var v = 12
+  var v = 98
     
   var colList = collection.toList(v);
   
@@ -137,5 +133,5 @@ var smoothed = smoothed.select(d_0_bands, smoothed_bands)
 // Step-6: Visualize the results
 //##############################################################
 
-imagecollectiondownload(smoothed, 'full_smoothed', i);
+imagecollectiondownload(smoothed, 'full_smoothed', 0);
 Map.addLayer(smoothed)  
