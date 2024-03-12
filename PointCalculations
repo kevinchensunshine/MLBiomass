@@ -14,8 +14,6 @@ var extract_loc = function(feature) {
   var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
   var locs = ee.String(val).split(', ')
   
-  var x = locs.get(0)
-  var y = locs.get(1)
   var x = ee.Number.parse(locs.get(0));
   var y = ee.Number.parse(locs.get(1));
   return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
