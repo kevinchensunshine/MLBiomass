@@ -1,0 +1,3 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
