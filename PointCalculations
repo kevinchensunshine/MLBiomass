@@ -11,7 +11,7 @@ var extract_loc = function(feature) {
   var y = locs.get(1)
   var x = ee.Number.parse(locs.get(0));
   var y = ee.Number.parse(locs.get(1));
-  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x).buffer(250));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x));
 }
 
 var geolocated_points = ee.FeatureCollection(points.map(extract_loc))
