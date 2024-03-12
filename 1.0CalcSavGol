@@ -136,4 +136,6 @@ for (var i = 0; i < len; i += stride) {
   //##############################################################
 
   imagecollectiondownload(smoothed, 'full_smoothed', i);
+  
+  Map.addLayer(smoothed.first())
 }
