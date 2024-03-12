@@ -1,3 +1,20 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
+var points = poi.select('GPS')
+
+var extract_loc = function(feature) {
+  var val = ee.Feature(feature).get('GPS')
+  var locs = ee.String(val).split(', ')
+  var x = locs.get(0)
+  var y = locs.get(1)
+  var x = ee.Number.parse(locs.get(0));
+  var y = ee.Number.parse(locs.get(1));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x));
+}
+
+var geolocated_points = ee.FeatureCollection(points.map(extract_loc))
+
+Map.addLayer(geolocated_points)
+Map.centerObject(geolocated_points)
+print(geolocated_points)
