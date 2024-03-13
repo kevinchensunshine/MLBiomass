@@ -140,5 +140,10 @@ imagecollectiondownload(smoothed, "points_smoothed_2019", 0)
 // Step-6: Visualize the results + Postprocessing
 //##############################################################
 
-
-Map.addLayer(smoothed.first().geometry())
+print(Chart.image.series(smoothed.select('smoothed_NDVI').filterBounds(geometry), geometry, ee.Reducer.median(), 10)
+    .setOptions({
+      title: 'NDVI Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
