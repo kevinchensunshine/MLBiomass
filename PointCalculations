@@ -143,10 +143,10 @@ function filterMultipleDate(collection) {
   }
   
   var res = ee.ImageCollection(doi.map(filterDate)).copyProperties(collection);
+  return res;
 }
 
 var smoothed = filterMultipleDate(smoothed.select(d_0_bands, smoothed_bands))
-print(smoothed)
 //##############################################################
 // Step-6: Visualize the results
 //##############################################################
