@@ -3,6 +3,7 @@ var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20"),
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var points = poi
+
 function format_date(date) {
   var tokens = ee.String(date).split('/')
   var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
@@ -20,8 +21,6 @@ var extract_loc = function(feature) {
 }
 
 var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
-
-print(geolocated_points)
 
 var imagecollection_dest_path = 'users/kevinlc3/full_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
@@ -80,7 +79,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 
 
 var startDate_one = ee.Date('2019-09-01')
-var endDate_one = ee.Date('2019-12-31')
+var endDate_one = ee.Date('2019-09-30')
 s2 = s2.filterDate(startDate_one, endDate_one)
 
 var geometry = geolocated_points.geometry().dissolve();
@@ -89,7 +88,7 @@ var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDV
 
 var filtered_one = s2.filterBounds(geometry)
 
-var filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                   .map(maskS2clouds)
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands);
@@ -136,17 +135,9 @@ var smoothed_bands = ['smoothed_B2',
                   'smoothed_NDVI'];
 
 smoothed = smoothed.select(d_0_bands, smoothed_bands)
-
 //##############################################################
 // Step-6: Visualize the results + Postprocessing
 //##############################################################
 
-imagecollectiondownload(smoothed, 'points_smoothed', 0);
 
-print(ui.Chart.image.series(smoothed.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 10)
-    .setOptions({
-      title: 'NDVI_SG_timeseries_3rd Custom Order',
-      interpolateNulls: true,
-      lineWidth: 1,
-      pointSize: 3,
-}));
+print(smoothed.first());
