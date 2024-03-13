@@ -80,7 +80,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 
 
 var startDate_one = ee.Date('2019-09-01')
-var endDate_one = ee.Date('2020-12-31')
+var endDate_one = ee.Date('2019-12-31')
 s2 = s2.filterDate(startDate_one, endDate_one)
 
 var geometry = geolocated_points.geometry().dissolve();
