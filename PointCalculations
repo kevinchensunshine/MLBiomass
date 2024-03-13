@@ -141,14 +141,4 @@ smoothed = smoothed.select(d_0_bands, smoothed_bands).filterBounds(geometry)
 // Step-6: Visualize the results + Postprocessing
 //##############################################################
 
-print(smoothed.first())
 imagecollectiondownload(smoothed, 'points_smoothed', 0);
-
-var visualization = {
-  min: 0.0,
-  max: 0.3,
-  bands: ['B4', 'B3', 'B2'],
-};
-
-Map.addLayer(
-  smoothed.first(), visualization)
