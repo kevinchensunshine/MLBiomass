@@ -21,6 +21,7 @@ var extract_loc = function(feature) {
 }
 
 var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
+var geometry = geolocated_points.geometry();
 
 var imagecollection_dest_path = 'users/kevinlc3/full_smoothed'
 var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
@@ -69,7 +70,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
     var assetId = assetFolder+id
     
     Export.image.toAsset({
-      image: img,
+      image: img.clip(geometry),
       description: id,
       assetId: assetId,
       maxPixels: 1e13,
@@ -83,8 +84,6 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
 var startDate_one = ee.Date('2019-09-01')
 var endDate_one = ee.Date('2019-12-31')
 s2 = s2.filterDate(startDate_one, endDate_one)
-
-var geometry = geolocated_points.geometry();
 
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
