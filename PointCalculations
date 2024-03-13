@@ -3,10 +3,12 @@ var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20"),
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var points = poi
-
+var doi = ee.List([])
 function format_date(date) {
   var tokens = ee.String(date).split('/')
-  return ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+  var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+  doi.add(date)
+  return date
 }
 
 var extract_loc = function(feature) {
@@ -134,7 +136,7 @@ var smoothed_bands = ['smoothed_B2',
                   'smoothed_B12', 
                   'smoothed_NDVI'];
 
-var smoothed = smoothed.select(d_0_bands, smoothed_bands)
+var smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate(doi)
 //##############################################################
 // Step-6: Visualize the results
 //##############################################################
