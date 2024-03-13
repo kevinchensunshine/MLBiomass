@@ -75,6 +75,7 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
       maxPixels: 1e13,
       scale: 10
     })
+    print(img.geometry())
   }
 }
 
