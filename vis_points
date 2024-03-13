@@ -59,7 +59,7 @@ var filtered_s2images = filtered_one.select(bands);
 
 Map.addLayer(geometry)
 
-print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.median(), 10)
+print(Chart.image.series(filtered_s2images.select('B8').filterDate(''), geometry, ee.Reducer.median(), 10)
     .setOptions({
       title: 'NDVI Original',
       lineWidth: 1,
