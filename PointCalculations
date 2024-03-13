@@ -135,7 +135,7 @@ var smoothed_bands = ['smoothed_B2',
                   'smoothed_B12', 
                   'smoothed_NDVI'];
 
-smoothed = smoothed.select(d_0_bands, smoothed_bands)
+smoothed = smoothed.select(d_0_bands, smoothed_bands).filterBounds(geometry)
 
 //##############################################################
 // Step-6: Visualize the results + Postprocessing
