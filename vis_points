@@ -1,31 +1,9 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var points2019 = ee.ImageCollection("users/kevinlc3/points_smoothed_2019"),
     points2020 = ee.ImageCollection("users/kevinlc3/points_smoothed_2020"),
-    s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
-    poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
+    s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
-
-var points = poi
-
-function format_date(date) {
-  var tokens = ee.String(date).split('/')
-  var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
-  return date
-}
-
-var extract_loc = function(feature) {
-  var val = ee.Feature(feature).get('GPS')
-  var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
-  var locs = ee.String(val).split(', ')
-  
-  var x = ee.Number.parse(locs.get(0));
-  var y = ee.Number.parse(locs.get(1));
-  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
-}
-
-var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
-var geometry = geolocated_points.geometry();
 
 function maskS2clouds(image) {
   var qa = image.select('QA60');
@@ -44,9 +22,11 @@ function addNDVI(image) {
   return image.addBands(ndvi);
 }
 
-var startDate_one = ee.Date('2020-09-01')
-var endDate_one = ee.Date('2020-12-31')
+var startDate_one = ee.Date('2019-09-01')
+var endDate_one = ee.Date('2019-12-31')
 s2 = s2.filterDate(startDate_one, endDate_one)
+
+var geometry = points2019.first().geometry().dissolve();
 
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
@@ -59,7 +39,7 @@ var filtered_s2images = filtered_one.select(bands);
 
 Map.addLayer(geometry)
 
-print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.median(), 10)
+print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.median(), 80)
     .setOptions({
       title: 'NDVI Original',
       lineWidth: 1,
@@ -67,7 +47,7 @@ print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.me
       maxPixels: 74223793
 }));
 
-print(Chart.image.series(points2020.select('smoothed_B8'), geometry, ee.Reducer.median(), 10)
+print(Chart.image.series(points2020.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 80)
     .setOptions({
       title: 'NDVI Smoothed',
       lineWidth: 1,
