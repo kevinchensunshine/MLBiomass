@@ -1,6 +1,6 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var imageCollection = ee.ImageCollection("users/kevinlc3/points_smoothed_2019"),
-    imageCollection2 = ee.ImageCollection("users/kevinlc3/points_smoothed_2020"),
+var points2019 = ee.ImageCollection("users/kevinlc3/points_smoothed_2019"),
+    points2020 = ee.ImageCollection("users/kevinlc3/points_smoothed_2020"),
     s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
@@ -26,7 +26,7 @@ var startDate_one = ee.Date('2019-09-01')
 var endDate_one = ee.Date('2019-12-31')
 s2 = s2.filterDate(startDate_one, endDate_one)
 
-var geometry = geolocated_points.geometry().dissolve();
+var geometry = points2019.geometry().dissolve();
 
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
