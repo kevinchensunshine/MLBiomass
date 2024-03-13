@@ -140,4 +140,4 @@ var smoothed = smoothed.select(d_0_bands, smoothed_bands)
 //##############################################################
 
 imagecollectiondownload(smoothed, 'full_smoothed', 0);
-Map.addLayer(smoothed)
+Map.addLayer(smoothed.geometry())
