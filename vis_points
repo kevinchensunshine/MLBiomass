@@ -37,7 +37,7 @@ filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands);
 
-print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.median(), 30)
+print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.median(), 60)
     .setOptions({
       title: 'NDVI Original',
       lineWidth: 1,
@@ -45,7 +45,7 @@ print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.
       maxPixels: 74223793
 }));
 
-print(Chart.image.series(points2019.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 30)
+print(Chart.image.series(points2019.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 60)
     .setOptions({
       title: 'NDVI Smoothed',
       lineWidth: 1,
