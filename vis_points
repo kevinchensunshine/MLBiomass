@@ -26,7 +26,8 @@ var startDate_one = ee.Date('2019-09-01')
 var endDate_one = ee.Date('2019-12-31')
 s2 = s2.filterDate(startDate_one, endDate_one)
 
-var geometry = points2019.first().geometry().dissolve();
+var geometry = points2020.first().geometry();
+print(geometry)
 
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
