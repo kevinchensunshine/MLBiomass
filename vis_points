@@ -42,6 +42,7 @@ print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.
       title: 'NDVI Original',
       lineWidth: 1,
       pointSize: 3,
+      bestEffort: true
 }));
 
 print(Chart.image.series(points2019.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 10)
@@ -49,4 +50,5 @@ print(Chart.image.series(points2019.select('smoothed_NDVI'), geometry, ee.Reduce
       title: 'NDVI Smoothed',
       lineWidth: 1,
       pointSize: 3,
+      bestEffort: true
 }));
