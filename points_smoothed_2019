@@ -51,6 +51,7 @@ function formatDate(feature) {
 
 var root = ee.data.getAssetRoots()[0]['id']
 var imagecollectiondownload = function(collection, assetFolder, tileno) {
+
   var folder = assetFolder
   if (folder !== null && folder !== undefined) {
     var assetFolder = root+'/'+folder+'/'
@@ -135,7 +136,6 @@ var smoothed_bands = ['smoothed_B2',
                   'smoothed_NDVI'];
 smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate('2019-10-14', '2019-11-05')
 
-print(smoothed.geometry())
 imagecollectiondownload(smoothed, "points_smoothed_2019", 0)
 //##############################################################
 // Step-6: Visualize the results + Postprocessing
