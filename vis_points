@@ -59,7 +59,7 @@ var filtered_s2images = filtered_one.select(bands);
 
 Map.addLayer(geometry)
 
-print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.median(), 10)
+print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.median(), 10)
     .setOptions({
       title: 'NDVI Original',
       lineWidth: 1,
@@ -67,7 +67,7 @@ print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.
       maxPixels: 74223793
 }));
 
-print(Chart.image.series(points2020.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 10)
+print(Chart.image.series(points2020.select('smoothed_B8'), geometry, ee.Reducer.median(), 10)
     .setOptions({
       title: 'NDVI Smoothed',
       lineWidth: 1,
