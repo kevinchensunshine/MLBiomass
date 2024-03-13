@@ -140,4 +140,11 @@ var smoothed = smoothed.select(d_0_bands, smoothed_bands)
 //##############################################################
 
 imagecollectiondownload(smoothed, 'full_smoothed', 0);
-Map.addLayer(smoothed.geometry())
+
+var visualization = {
+  min: 0.0,
+  max: 0.3,
+  bands: ['B4', 'B3', 'B2'],
+};
+
+Map.addLayer(smoothed.first(), visualization)
