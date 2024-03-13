@@ -142,3 +142,11 @@ smoothed = smoothed.select(d_0_bands, smoothed_bands)
 //##############################################################
 
 imagecollectiondownload(smoothed, 'points_smoothed', 0);
+
+print(ui.Chart.image.series(smoothed.select('smoothed_NDVI'), geometry, ee.Reducer.median(), 10)
+    .setOptions({
+      title: 'NDVI_SG_timeseries_3rd Custom Order',
+      interpolateNulls: true,
+      lineWidth: 1,
+      pointSize: 3,
+}));
