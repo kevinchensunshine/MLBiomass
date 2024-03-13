@@ -139,19 +139,18 @@ var smoothed_bands = ['smoothed_B2',
 function filterMultipleDate(collection) {
   
   var filterDate = function(date) {
-    return collection.filterDate(ee.Date(date), ee.Date(date).advance(1, 'day')).first()
+    return ee.Image(collection.filterDate(ee.Date(date), ee.Date(date).advance(1, 'day')).first())
   }
   
-  var res = ee.ImageCollection(doi.map(filterDate)).copyProperties(collection);
-  return res;
+  return ee.ImageCollection(doi.map(filterDate)).copyProperties(collection);
 }
 
 var smoothed = filterMultipleDate(smoothed.select(d_0_bands, smoothed_bands))
 //##############################################################
 // Step-6: Visualize the results
-//##############################################################
+//##############################################################first
 
-imagecollectiondownload(smoothed, 'points_smoothed', 0);
+imagecollectiondownload(ee.ImageCollection(smoothed), 'points_smoothed', 0);
 
 var visualization = {
   min: 0.0,
@@ -159,4 +158,5 @@ var visualization = {
   bands: ['B4', 'B3', 'B2'],
 };
 
-Map.addLayer(smoothed.first(), visualization)
+Map.addLayer(
+  smoothed.first(), visualization)
