@@ -76,7 +76,6 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
       maxPixels: 1e13,
       scale: 10
     })
-    print(img.geometry())
   }
 }
 
@@ -142,4 +141,4 @@ imagecollectiondownload(smoothed, "points_smoothed_2019", 0)
 //##############################################################
 
 
-Map.addLayer(smoothed)
+Map.addLayer(smoothed.first().geometry())
