@@ -59,22 +59,6 @@ var filtered_s2images = filtered_one.select(bands);
 
 Map.addLayer(geometry)
 
-print(Chart.image.series(filtered_s2images.select('B1'), geometry, ee.Reducer.mean(), 60)
-    .setOptions({
-      title: 'B1 Original',
-      lineWidth: 1,
-      pointSize: 3,
-      maxPixels: 74223793
-}));
-
-print(Chart.image.series(points2020.select('smoothed_B1'), geometry, ee.Reducer.mean(), 60)
-    .setOptions({
-      title: 'B1 Smoothed',
-      lineWidth: 1,
-      pointSize: 3,
-      maxPixels: 74223793
-}));
-
 print(Chart.image.series(filtered_s2images.select('B2'), geometry, ee.Reducer.mean(), 10)
     .setOptions({
       title: 'B2 Original',
@@ -182,6 +166,54 @@ print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.me
 print(Chart.image.series(points2020.select('smoothed_B8'), geometry, ee.Reducer.mean(), 10)
     .setOptions({
       title: 'B8 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B8A'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B8A Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B8A'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B8A Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B11'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B11 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B11'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B11 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B12'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B12 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B12'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B12 Smoothed',
       lineWidth: 1,
       pointSize: 3,
       maxPixels: 74223793
