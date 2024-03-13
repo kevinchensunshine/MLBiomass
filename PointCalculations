@@ -136,21 +136,13 @@ var smoothed_bands = ['smoothed_B2',
                   'smoothed_B12', 
                   'smoothed_NDVI'];
 
-function filterMultipleDate(collection) {
-  
-  var filterDate = function(date) {
-    return ee.Image(collection.filterDate(ee.Date(date), ee.Date(date).advance(1, 'day')).first())
-  }
-  
-  return ee.ImageCollection(doi.map(filterDate)).copyProperties(collection);
-}
-
-var smoothed = filterMultipleDate(smoothed.select(d_0_bands, smoothed_bands))
+smoothed = smoothed.select(d_0_bands, smoothed_bands).filter(ee.Filter.inList('system:time_start', doi))
+print(smoothed)
 //##############################################################
 // Step-6: Visualize the results
 //##############################################################first
 
-imagecollectiondownload(ee.ImageCollection(smoothed), 'points_smoothed', 0);
+imagecollectiondownload(smoothed, 'points_smoothed', 0);
 
 var visualization = {
   min: 0.0,
