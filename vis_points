@@ -56,6 +56,7 @@ filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                   .map(maskS2clouds)
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands).filterBounds(ee.Geometry.Point(9.14857609430935, 57.0729928927206));
+points2020 = points2020.filterBounds(ee.Geometry.Point(9.14857609430935, 57.0729928927206))
 
 Map.addLayer(geometry)
 
