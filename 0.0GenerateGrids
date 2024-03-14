@@ -1,0 +1,38 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/	
+var grid = ee.FeatureCollection("users/kevinlc3/denmark_grids");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/	
+var euromap_2018 = ee.Image('JRC/D5/EUCROPMAP/V1/2018');	
+
+var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017').filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
+
+Map.addLayer(denmark_bound,{}, 'roi');
+
+Map.addLayer(grid,{}, 'grid');
+
+var folderpath='users/kevinlc3/DenmarkStudy/';
+
+var imageBaseName='crop_shapes';
+
+var gridSize=grid.size().getInfo();
+
+var gridList=grid.toList(gridSize);
+
+for (var i=0; i < gridSize; i++){
+  var gridCell = ee.Feature(gridList.get(i)).geometry();
+  var euromap_cell = euromap_2018.clip(gridCell)
+  var croplandcover = euromap_cell.select('classification')
+  var wheatlandcovermask = croplandcover.eq(211)
+  var wheatfields = euromap_cell.updateMask(wheatlandcovermask);
+  var wheatfields_shapes = wheatfields.reduceToVectors({
+    geometry: denmark_bound,
+    scale: 30,
+    maxPixels: 1e9,
+    bestEffort: true,
+    eightConnected: true,
+    tileScale: 4
+    });
+    
+  Export.table.toAsset({
+  collection: wheatfields_shapes,	    description: 'wheatfields',	    assetId: folderpath + 'wheatfields_tile' + i	  });	
+  
+}	

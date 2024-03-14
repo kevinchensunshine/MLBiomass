@@ -1,0 +1,18 @@
+var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
+
+var folder_path = "users/kevinlc3/DenmarkStudy/";
+var filename_base = "full_tile";
+var filename = "FullShapes";
+
+var batch_list = []
+for (var i = 0; i < 98; i++) {
+  batch_list.push(filename_base + i);
+}
+
+var final_collection = gpp_utils.mergeCollection(folder_path, batch_list);
+Map.addLayer(final_collection);
+Export.table.toAsset({
+  collection: final_collection,
+  description: "Denmark defined boundaries for all crops",
+  assetId: filename
+});

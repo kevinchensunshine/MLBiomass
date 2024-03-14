@@ -1,0 +1,243 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var points2019 = ee.ImageCollection("users/kevinlc3/points_smoothed_2019"),
+    points2020 = ee.ImageCollection("users/kevinlc3/points_smoothed_2020"),
+    s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED"),
+    poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
+
+var points = poi
+
+function format_date(date) {
+  var tokens = ee.String(date).split('/')
+  var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+  return date
+}
+
+var extract_loc = function(feature) {
+  var val = ee.Feature(feature).get('GPS')
+  var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
+  var locs = ee.String(val).split(', ')
+  
+  var x = ee.Number.parse(locs.get(0));
+  var y = ee.Number.parse(locs.get(1));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
+}
+
+var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
+var geometry = geolocated_points.geometry();
+
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+  var cloudBitMask = 1 << 10;
+  var cirrusBitMask = 1 << 11;
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0)
+            .and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+  return image.updateMask(mask).divide(10000)
+              .copyProperties(image, ['system:time_start','system:time_end']);
+}
+
+function addNDVI(image) {
+  // Compute NDVI
+  var ndvi = image.normalizedDifference(['B8', 'B4']).rename('NDVI');
+  // Add NIRv as a new band to the image
+  return image.addBands(ndvi);
+}
+
+var startDate_one = ee.Date('2020-09-01')
+var endDate_one = ee.Date('2020-12-31')
+s2 = s2.filterDate(startDate_one, endDate_one)
+
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
+
+var filtered_one = s2.filterBounds(geometry)
+
+filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+                  .map(maskS2clouds)
+                  .map(addNDVI)
+var filtered_s2images = filtered_one.select(bands).filterBounds(ee.Geometry.Point(9.14857609430935, 57.0729928927206));
+
+var poi = ee.Geometry.Point(9.14857609430935, 57.0729928927206)
+function focus_loc(img) {
+  return img.clip(poi)
+}
+
+points2020 = points2020.map(focus_loc)
+print(points2020.geometry())
+Map.addLayer(geometry)
+
+print(Chart.image.series(filtered_s2images.select('B2'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B2 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B2'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B2 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B3'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B3 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B3'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B3 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B4'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B4 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B4'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B4 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B5'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B5 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B5'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B5 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B6'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B6 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B6'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B6 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B7'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B7 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B7'), geometry, ee.Reducer.mean(), 20)
+    .setOptions({
+      title: 'B7 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B8'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B8 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B8'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'B8 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B8A'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B8A Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B8A'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B8A Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B11'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B11 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B11'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B11 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('B12'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B12 Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_B12'), geometry, ee.Reducer.mean(), 60)
+    .setOptions({
+      title: 'B12 Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(filtered_s2images.select('NDVI'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'NDVI Original',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
+
+print(Chart.image.series(points2020.select('smoothed_NDVI'), geometry, ee.Reducer.mean(), 10)
+    .setOptions({
+      title: 'NDVI Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
