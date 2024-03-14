@@ -56,8 +56,14 @@ filtered_one = filtered_one.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                   .map(maskS2clouds)
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands).filterBounds(ee.Geometry.Point(9.14857609430935, 57.0729928927206));
-//points2020 = points2020.filterBounds(ee.Geometry.Point(9.14857609430935, 57.0729928927206))
 
+var poi = ee.Geometry.Point(9.14857609430935, 57.0729928927206)
+function focus_loc(img) {
+  return img.clip(poi)
+}
+
+points2020 = points2020.map(focus_loc)
+print(points2020.geometry())
 Map.addLayer(geometry)
 
 print(Chart.image.series(filtered_s2images.select('B2'), geometry, ee.Reducer.mean(), 10)
