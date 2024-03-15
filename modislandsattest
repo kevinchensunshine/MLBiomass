@@ -1,1 +1,5 @@
-projects/ee-emma/assets/GF_Landsat_Europe_C2
+var poi = ee.Geometry.Point(9.14857609430935, 57.0729928927206)
+
+var gf = ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2').filterBounds(poi).filterDate('2020-10-12', '2020-12-01')
+
+Map.addLayer(gf.first())
