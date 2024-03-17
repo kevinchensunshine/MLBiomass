@@ -1,2 +1,43 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var points = poi
+
+function format_date(date) {
+  var tokens = ee.String(date).split('/')
+  var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+  return date
+}
+
+var extract_loc = function(feature) {
+  var val = ee.Feature(feature).get('GPS')
+  var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
+  var locs = ee.String(val).split(', ')
+  
+  var x = ee.Number.parse(locs.get(0));
+  var y = ee.Number.parse(locs.get(1));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
+}
+
+var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
+var geometry = geolocated_points.geometry();
+
+var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
+            .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
+
+var startDate_one = ee.Date('2019-09-01')
+var endDate_one = ee.Date('2019-12-31')
+
 var GF_Landsat =
-    ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2');
+    ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2')
+    .filterBounds(denmark_bound)
+    .filterDate(startDate_one, endDate_one)
+    
+function clip_images(img) {
+  return img.clip(geometry)
+}
+
+GF_Landsat = GF_Landsat.map(clip_images)
+
+print(GF_Landsat.size())
+Map.addLayer(GF_Landsat)
