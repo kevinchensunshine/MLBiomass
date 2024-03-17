@@ -1,0 +1,2 @@
+var GF_Landsat =
+    ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2');
