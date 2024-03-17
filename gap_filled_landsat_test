@@ -49,8 +49,7 @@ function addNDVI(img) {
 
 var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
 
-filtered_one = GF_Landsat.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
-                  .map(maskS2clouds)
+filtered_one = GF_Landsat
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands);
 
