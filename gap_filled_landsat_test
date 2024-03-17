@@ -2,6 +2,7 @@
 var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 var points = poi
+var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
 
 function format_date(date) {
   var tokens = ee.String(date).split('/')
@@ -32,6 +33,7 @@ var GF_Landsat =
     ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2')
     .filterBounds(denmark_bound)
     .filterDate(startDate_one, endDate_one)
+print(GF_Landsat.first())
     
 function clip_images(img) {
   return img.clip(geometry)
@@ -47,9 +49,9 @@ function addNDVI(img) {
   ]);
 }
 
-var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
+var bands = ['B1_mean_post', 'B2_mean_post', 'B3_mean_post', 'B4_mean_post', 'B5_mean_post', 'B6_mean_post', 'B7_mean_post', 'NDVI'];
 
-filtered_one = GF_Landsat
+var filtered_one = GF_Landsat
                   .map(addNDVI)
 var filtered_s2images = filtered_one.select(bands);
 
