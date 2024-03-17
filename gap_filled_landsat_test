@@ -95,14 +95,6 @@ smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate('2019-10-14', '
 // Step-6: Visualize the results + Postprocessing
 //##############################################################
 
-print(Chart.image.series(smoothed.select('smoothed_NDVI').filterBounds(geometry), geometry, ee.Reducer.median(), 10)
-    .setOptions({
-      title: 'NDVI Smoothed',
-      lineWidth: 1,
-      pointSize: 3,
-      maxPixels: 74223793
-}));
-
 var root = ee.data.getAssetRoots()[0]['id']
 var imagecollectiondownload = function(collection, assetFolder, tileno) {
 
@@ -132,4 +124,4 @@ var imagecollectiondownload = function(collection, assetFolder, tileno) {
   }
 }
 
-imagecollectiondownload(smoothed, "points_smoothed_2019", 0)
+imagecollectiondownload(smoothed, "gflandsat_points_smoothed_2019", 0)
