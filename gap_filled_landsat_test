@@ -49,7 +49,7 @@ function addNDVI(img) {
   ]);
 }
 
-var bands = ['B1_mean_post', 'B2_mean_post', 'B3_mean_post', 'B4_mean_post', 'B5_mean_post', 'B6_mean_post', 'B7_mean_post', 'NDVI'];
+var bands = ['B1_mean_post', 'B2_mean_post', 'B3_mean_post', 'B4_mean_post', 'B5_mean_post', 'B7_mean_post', 'NDVI'];
 
 var filtered_one = GF_Landsat
                   .map(addNDVI)
