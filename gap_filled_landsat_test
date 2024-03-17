@@ -39,5 +39,71 @@ function clip_images(img) {
 
 GF_Landsat = GF_Landsat.map(clip_images)
 
-print(GF_Landsat.size())
-Map.addLayer(GF_Landsat)
+function addNDVI(img) {
+  var ndvi =
+      img.normalizedDifference(['B4_mean_post', 'B3_mean_post']).rename('NDVI');
+  return img.addBands(ndvi).copyProperties(img, [
+    'system:time_start', 'month', 'year', 'DOY'
+  ]);
+}
+
+var bands = ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'NDVI'];
+
+filtered_one = GF_Landsat.filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
+                  .map(maskS2clouds)
+                  .map(addNDVI)
+var filtered_s2images = filtered_one.select(bands);
+
+//##############################################################
+// Step-2: Apply an SGFilter
+//##############################################################
+
+// Select the interval. We will have 1 image every n days
+var n = 1
+
+var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
+
+//##############################################################
+// Step-5: Apply Savitzky-Golay filter
+//##############################################################
+
+var order = 5
+var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
+
+// Select the d_0_ndvi band and rename it
+var d_0_bands = ['d_0_B2',
+                  'd_0_B3', 
+                  'd_0_B4', 
+                  'd_0_B5',
+                  'd_0_B6',
+                  'd_0_B7',
+                  'd_0_B8',
+                  'd_0_B8A',
+                  'd_0_B11',
+                  'd_0_B12', 
+                  'd_0_NDVI'];
+                  
+var smoothed_bands = ['smoothed_B2',
+                  'smoothed_B3', 
+                  'smoothed_B4', 
+                  'smoothed_B5',
+                  'smoothed_B6',
+                  'smoothed_B7',
+                  'smoothed_B8',
+                  'smoothed_B8A',
+                  'smoothed_B11',
+                  'smoothed_B12', 
+                  'smoothed_NDVI'];
+smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate('2019-10-14', '2019-11-05')
+
+//##############################################################
+// Step-6: Visualize the results + Postprocessing
+//##############################################################
+
+print(Chart.image.series(smoothed.select('smoothed_NDVI').filterBounds(geometry), geometry, ee.Reducer.median(), 10)
+    .setOptions({
+      title: 'NDVI Smoothed',
+      lineWidth: 1,
+      pointSize: 3,
+      maxPixels: 74223793
+}));
