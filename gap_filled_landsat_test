@@ -72,29 +72,23 @@ var order = 5
 var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
 
 // Select the d_0_ndvi band and rename it
-var d_0_bands = ['d_0_B2',
-                  'd_0_B3', 
-                  'd_0_B4', 
-                  'd_0_B5',
-                  'd_0_B6',
-                  'd_0_B7',
-                  'd_0_B8',
-                  'd_0_B8A',
-                  'd_0_B11',
-                  'd_0_B12', 
+var d_0_bands = ['d_0_B1_mean_post',
+                  'd_0_B2_mean_post', 
+                  'd_0_B3_mean_post', 
+                  'd_0_B4_mean_post',
+                  'd_0_B5_mean_post',
+                  'd_0_B7_mean_post',
                   'd_0_NDVI'];
                   
-var smoothed_bands = ['smoothed_B2',
-                  'smoothed_B3', 
-                  'smoothed_B4', 
-                  'smoothed_B5',
-                  'smoothed_B6',
-                  'smoothed_B7',
-                  'smoothed_B8',
-                  'smoothed_B8A',
-                  'smoothed_B11',
-                  'smoothed_B12', 
+var smoothed_bands = ['smoothed_B1_mean_post',
+                  'smoothed_B2_mean_post', 
+                  'smoothed_B3_mean_post', 
+                  'smoothed_B4_mean_post',
+                  'smoothed_B5_mean_post',
+                  'smoothed_B7_mean_post',
                   'smoothed_NDVI'];
+                  
+// We added a buffer for smoothing, so the dates are concentrated here
 smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate('2019-10-14', '2019-11-05')
 
 //##############################################################
