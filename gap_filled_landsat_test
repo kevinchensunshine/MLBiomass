@@ -1,0 +1,127 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var poi = ee.FeatureCollection("users/kevinlc3/Cover_biomass_19-20");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var points = poi
+var gpp_utils = require('users/kevinlc3/ndvi_nir_collection:Utils/GPP_Processing_Lib');
+
+function format_date(date) {
+  var tokens = ee.String(date).split('/')
+  var date = ee.Date.fromYMD(ee.Number.parse(tokens.get(2)), ee.Number.parse(tokens.get(1)), ee.Number.parse(tokens.get(0)))
+  return date
+}
+
+var extract_loc = function(feature) {
+  var val = ee.Feature(feature).get('GPS')
+  var date = format_date(ee.Feature(feature).get('Date(Date, month, year)'))
+  var locs = ee.String(val).split(', ')
+  
+  var x = ee.Number.parse(locs.get(0));
+  var y = ee.Number.parse(locs.get(1));
+  return ee.Feature(feature).setGeometry(ee.Geometry.Point(y, x)).set({'system:time_start': ee.Date(date)});
+}
+
+var geolocated_points = ee.FeatureCollection(points.map(extract_loc)).select('GPS')
+var geometry = geolocated_points.geometry();
+
+var denmark_bound = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017')
+            .filter(ee.Filter.eq('country_na', 'Denmark')).geometry();
+
+var startDate_one = ee.Date('2019-09-01')
+var endDate_one = ee.Date('2019-12-31')
+
+var GF_Landsat =
+    ee.ImageCollection('projects/ee-emma/assets/GF_Landsat_Europe_C2')
+    .filterBounds(denmark_bound)
+    .filterDate(startDate_one, endDate_one)
+print(GF_Landsat.first())
+    
+function clip_images(img) {
+  return img.clip(geometry)
+}
+
+GF_Landsat = GF_Landsat.map(clip_images)
+
+function addNDVI(img) {
+  var ndvi =
+      img.normalizedDifference(['B4_mean_post', 'B3_mean_post']).rename('NDVI');
+  return img.addBands(ndvi).copyProperties(img, [
+    'system:time_start', 'month', 'year', 'DOY'
+  ]);
+}
+
+var bands = ['B1_mean_post', 'B2_mean_post', 'B3_mean_post', 'B4_mean_post', 'B5_mean_post', 'B7_mean_post', 'NDVI'];
+
+var filtered_one = GF_Landsat
+                  .map(addNDVI)
+var filtered_s2images = filtered_one.select(bands);
+
+//##############################################################
+// Step-2: Apply an SGFilter
+//##############################################################
+
+// Select the interval. We will have 1 image every n days
+var n = 1
+
+var interpolatedCol = gpp_utils.interpolateCollection(filtered_s2images, n, geometry).select(bands)
+
+//##############################################################
+// Step-5: Apply Savitzky-Golay filter
+//##############################################################
+
+var order = 5
+var smoothed = gpp_utils.applySGFilter(interpolatedCol, order)
+
+// Select the d_0_ndvi band and rename it
+var d_0_bands = ['d_0_B1_mean_post',
+                  'd_0_B2_mean_post', 
+                  'd_0_B3_mean_post', 
+                  'd_0_B4_mean_post',
+                  'd_0_B5_mean_post',
+                  'd_0_B7_mean_post',
+                  'd_0_NDVI'];
+                  
+var smoothed_bands = ['smoothed_B1_mean_post',
+                  'smoothed_B2_mean_post', 
+                  'smoothed_B3_mean_post', 
+                  'smoothed_B4_mean_post',
+                  'smoothed_B5_mean_post',
+                  'smoothed_B7_mean_post',
+                  'smoothed_NDVI'];
+                  
+// We added a buffer for smoothing, so the dates are concentrated here
+smoothed = smoothed.select(d_0_bands, smoothed_bands).filterDate('2019-10-14', '2019-11-05')
+
+//##############################################################
+// Step-6: Visualize the results + Postprocessing
+//##############################################################
+
+var root = ee.data.getAssetRoots()[0]['id']
+var imagecollectiondownload = function(collection, assetFolder, tileno) {
+
+  var folder = assetFolder
+  if (folder !== null && folder !== undefined) {
+    var assetFolder = root+'/'+folder+'/'
+  } else {
+    var assetFolder = root+'/'
+  }
+    
+  var v = collection.size().getInfo()
+    
+  var colList = collection.toList(v);
+  
+  for (var i = 0; i < v; i++) {
+    var img = ee.Image(colList.get(i)).clip(geometry);
+    var id = 'full_image_tile'+ i.toString() + '_' + tileno.toString();
+    var assetId = assetFolder+id
+    
+    Export.image.toAsset({
+      image: img.clip(geometry),
+      description: id,
+      assetId: assetId,
+      maxPixels: 1e13,
+      scale: 10
+    })
+  }
+}
+
+imagecollectiondownload(smoothed, "gflandsat_points_smoothed_2019", 0)
